@@ -82,4 +82,4 @@ Em situações que for necessário imprimir algo para o usuário, ou qualquer te
     
 - [Lucas Costa Vieira de Lima](https://github.com/shoriuguen)
     
-- Clebio Ribeiro Lopes
+- [Clebio Ribeiro Lopes](https://github.com/ClebioRibeiro)
