@@ -1,6 +1,16 @@
 #ifndef PRODUTO 
 #define PRODUTO
 
-// Coloque a prototipação da função aqui
+void inserirProduto();
+
+void listarProduto();
+
+void editarProduto();
+
+void removerProduto();
+
+void salvarProdutoCSV();
+
+void carregarProdutoCSV();
 
 #endif
