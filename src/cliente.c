@@ -29,3 +29,19 @@ typedef struct PessoaJuridica
     char cnpj[19]; // Char para incluir os digitos numéricos e especiais como o '-'
 
 } PessoaJuridica;
+
+// Parte Clebio
+
+#include "cliente.h"
+
+void inserirCliente(){}
+
+void listarCliente(){}
+
+void editarCliente(){}
+
+void removerCliente(){}
+
+void salvarClienteCSV(){}
+
+void carregarClienteCSV(){}
