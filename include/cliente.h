@@ -1,6 +1,8 @@
 #ifndef CLIENTE 
 #define CLIENTE
 
+// Coloque a prototipação da função aqui
+
 void inserirCliente();
 
 void listarCliente();

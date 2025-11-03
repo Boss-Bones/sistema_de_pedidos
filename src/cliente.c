@@ -30,9 +30,6 @@ typedef struct PessoaJuridica
 
 } PessoaJuridica;
 
-// Parte Clebio
-
-#include "cliente.h"
 
 void inserirCliente(){}
 
