@@ -3,13 +3,12 @@
 
 // ==== Estruturas ====
 
-typedef struct // Estrutura do tipo 'produto'
-{
-    int id; // Identificação do produto
-    char descricao[100]; // Descrição do produto
-    double preco; // Preço do produto em reais
-    int estoque; // Quantidade do produto no estoque
-} produto;
+typedef struct {
+    int id;
+    char descricao[100];
+    double preco;
+    int estoque;
+} Produto;
 
 // ==== Váriaveis ====
 
@@ -21,17 +20,9 @@ Como saber se chegou ao limite? Use quant_produtos e max_produtos para saber, gu
 */
 int quant_produtos; // Quantidade de produtos no vetor 'produtos'
 int max_produtos; // Tamanho do vetor 'produtos'
-produto* produtos; // Vetor de produtos
+Produto* produtos; // Vetor de produtos
 
 // ==== Funções ====
-
-typedef struct {
-    int id;
-    char descricao[100];
-    double preco;
-    int estoque;
-} Produto;
-
 
 void inserirProduto(Produto *pdt){
     FILE *pt;
