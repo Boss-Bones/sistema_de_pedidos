@@ -1,4 +1,29 @@
 #include "produto.h"
+#include <stdlib.h>
+
+// ==== Estruturas ====
+
+typedef struct // Estrutura do tipo 'produto'
+{
+    int id; // Identificação do produto
+    char descricao[100]; // Descrição do produto
+    double preco; // Preço do produto em reais
+    int estoque; // Quantidade do produto no estoque
+} produto;
+
+// ==== Váriaveis ====
+
+/*
+A váriavel produtos deve armazenar os produtos de forma dinâmica, use alocação dinâmica, como o malloc()
+
+Começe alocando um espaço inicial (ex.: 10), ao chegar ao limite, aumente o vetor usando realloc(), não faça de 1 em 1 (ex.: +10 depois de atingir o limite)
+Como saber se chegou ao limite? Use quant_produtos e max_produtos para saber, guarde neles também para não se perder.
+*/
+int quant_produtos; // Quantidade de produtos no vetor 'produtos'
+int max_produtos; // Tamanho do vetor 'produtos'
+produto* produtos; // Vetor de produtos
+
+// ==== Funções ====
 
 typedef struct {
     int id;
