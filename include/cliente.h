@@ -15,4 +15,5 @@ void salvarClienteCSV();
 
 void carregarClienteCSV();
 
+void Validar_CPF();
 #endif
