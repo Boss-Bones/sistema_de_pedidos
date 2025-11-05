@@ -25,40 +25,59 @@ Produto* produtos; // Vetor de produtos
 // ==== Funções ====
 
 void inserirProduto(Produto *pdt){
-    FILE *pt;
-
-    scanf("%d", pdt->id); // ler id
-    while(getchar() != '\n'); // tirar "\n" do buffer
-
-    fgets(pdt->descricao, 100, stdin); // ler descricao
-    limparCBarraN(&pdt->descricao); // funcao com justificativa no final
-
-    scanf("%lf", pdt->preco); // ler preco
-
-    scanf("%d", pdt->estoque); // ler estoque
-
-    // abrir arquivo e cadastrar produto
-    pt = fopen("produto.csv", "a");
-
-    if(pt != NULL)
-    {
-        fprintf(pt, "%d,%s,%lf,%d");
-        printf("Dados guardados!\n");
-        // ao inves de %s, poderia usar um delimitador, mas não sei qual e como 
-    } else {
-        printf("Erro ao abrir o arquivo!\n");
-    }
-
-    fclose(pt);
-    // arquivo fechado fim
+    
+    // funcao de leitura, que pelo que o Joao Fernando me disse, chamará essa função
+    (pdt+quant_produtos) // load
     
 }
 
-void listarProduto(){}
+void listarProduto(Produto *pdt){
+
+    for(int i=0; i<quant_produtos; i++){
+        printf("%d - %s - %lf - %d\n", (pdt+i)->id, (pdt+i)->descricao, (pdt+i)->preco, (pdt+i)->estoque);
+    }
+}
 
 void editarProduto(){}
 
-void removerProduto(){}
+void removerProduto(Produto *pdt, int idremove){
+    int i=0, j=0, existe=0, existepedido=0;
+
+    /* enquanto não achar um codigo igual ao codigo que o usuario entrou
+    ou não tiver chegado no final do vetor, continua lendo. Aqui é E(&&)
+    ao invés de OU(||) por causa da Lei de De Morgan*/
+
+    /*tinha que ter mais um argumento que vem de pedidos, mas
+    não sei exatamente de onde ele vem, ai não sei que parametro colocar ali*/
+
+
+    // checa se existe um produto com o código que o usuário entrou
+    while(i<quant_produtos){
+        if(pdt->id == idremove)
+        {
+            existe++;
+            break;
+        }
+    }
+
+    /* trabalha com duas opções, se o produto existe, então ele verifica
+    se existe um pedido com esse produto, que era pra ser o while ali dentro,
+    se não existe, vai informar uma mensagem de erro que o produto não existe */
+    if(existe>0)
+    {
+        while()
+        /* deve haver algum parametro que eu não sei como colocar, se eu colocar um parametro pedido *ponteiro funciona? Pois como a struct
+        pedido nao está aqui, o VS Code fica acusando erro */
+        if(existepedido>0){
+            printf("Produto não pode ser excluído pois existe um pedido!\n");
+        } else {
+            /* não sei como implementar o pedido de confirmação de exclusão aqui, 
+            seria com uma simples opção de scanf ou algo relacionado ao ncurses?*/
+        }
+    } else {
+        printf("Erro, id não cadastrado!\n");
+    }
+}
 
 void salvarProdutoCSV(){}
 
