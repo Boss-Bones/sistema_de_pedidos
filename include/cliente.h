@@ -1,5 +1,6 @@
 #ifndef CLIENTE 
 #define CLIENTE
+#include <stdbool.h>
 
 // Coloque a prototipação da função aqui
 
@@ -15,5 +16,7 @@ void salvarClienteCSV();
 
 void carregarClienteCSV();
 
-void Validar_CPF();
+bool Validar_CPF();
+
+bool Validar_CNPJ();
 #endif
