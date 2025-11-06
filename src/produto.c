@@ -24,6 +24,52 @@ Produto* produtos; // Vetor de produtos
 
 // ==== Funções ====
 
+Produto* consultarProduto(int id) {
+    /*
+    Implementação do caso de uso "Consultar produto"
+
+    Nesse caso de uso, é extraído que o sistema deve retornar o produto com id correspondente, se existir...
+    ...então, para isso, essa função foi criada para realizar exatamente isso
+
+    Retorna:
+    - Valor do tipo produto (Se tiver um produto com id correspondente)
+    - NULL (Se não tiver um produto com id correspondente)
+    */
+
+    int i_produto = verificarProduto(id);
+
+    if(i_produto != NULL) {
+        return produtos+i_produto;
+    }
+    return NULL;
+}
+
+int verificarProduto(int id) {
+    /*
+    Implementação do caso de uso "Analisar produto"
+
+    Nesse caso de uso, é extraído que o sistema deve verificar se existe um produto com o id correspondente informado...
+    ...então, para isso, essa função foi criada para retornar a existência do produto (segundo o id informado)
+
+    Retorna:
+    - indice do produto (Se tiver um produto com id correspondente)
+    - -1 (Se não tiver um produto com id correspondente)
+    */
+
+    // Passa por todo o vetor
+    for(int i = 0; i < quant_produtos; i++) {
+        // Se o produto do indice i tiver o id correspondente
+        if( (*(produtos+i)).id == id ) {
+            // Retorna o indice
+            return i;
+        }
+    }
+
+    // Passou por todo o vetor e não encontrou nenhum com id correspondente, retorna -1
+    return -1;
+}
+
+// Clebio, te orientei pelo Whatsapp, me fale qualquer dúvida
 void inserirProduto(Produto *pdt){
     
     // funcao de leitura, que pelo que o Joao Fernando me disse, chamará essa função
@@ -31,6 +77,7 @@ void inserirProduto(Produto *pdt){
     
 }
 
+// Clebio, essa função pode ser reescrita em ncurses na interface.c, estarei pensando antes de remover
 void listarProduto(Produto *pdt){
 
     for(int i=0; i<quant_produtos; i++){
@@ -40,6 +87,7 @@ void listarProduto(Produto *pdt){
 
 void editarProduto(){}
 
+// Clebio, no atual momento ainda não é possĩvel criar essa função
 void removerProduto(Produto *pdt, int idremove){
     int i=0, j=0, existe=0, existepedido=0;
 
