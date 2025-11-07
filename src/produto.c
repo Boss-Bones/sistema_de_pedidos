@@ -1,5 +1,7 @@
 #include "produto.h"
+#include "pedido.h"
 #include <stdlib.h>
+#include <stdbool.h>
 
 // ==== Estruturas ====
 
@@ -76,61 +78,49 @@ int verificarProduto(int id) {
 }
 
 // Clebio, te orientei pelo Whatsapp, me fale qualquer dúvida
-void inserirProduto(Produto *pdt){
-    
-    // funcao de leitura, que pelo que o Joao Fernando me disse, chamará essa função
-    (pdt+quant_produtos) // load
-    
+bool inserirProduto(Produto prd, ListaProduto *pdt){
+
+    if(verificarProduto(prd.id) == -1){
+
+        if(pdt->max == pdt->quant){
+            pdt->produtos = (Produto*)realloc(pdt->produtos, (pdt->max + 10)*sizeof(Produto));
+            pdt->max = pdt->max + 10;
+        }
+
+        *((pdt->produtos)+(pdt->quant)) = prd;
+        pdt->quant++;
+
+        return true;
+    }
+
+    return false;
 }
 
 // Clebio, essa função pode ser reescrita em ncurses na interface.c, estarei pensando antes de remover
-void listarProduto(Produto *pdt){
-
-    for(int i=0; i<quant_produtos; i++){
-        printf("%d - %s - %lf - %d\n", (pdt+i)->id, (pdt+i)->descricao, (pdt+i)->preco, (pdt+i)->estoque);
-    }
-}
 
 void editarProduto(){}
 
 // Clebio, no atual momento ainda não é possĩvel criar essa função
-void removerProduto(Produto *pdt, int idremove){
-    int i=0, j=0, existe=0, existepedido=0;
+bool removerProduto(ListaProduto *pdt, int idremove){
+    int indice, j=0, existe=0, existepedido=0;
 
-    /* enquanto não achar um codigo igual ao codigo que o usuario entrou
-    ou não tiver chegado no final do vetor, continua lendo. Aqui é E(&&)
-    ao invés de OU(||) por causa da Lei de De Morgan*/
-
-    /*tinha que ter mais um argumento que vem de pedidos, mas
-    não sei exatamente de onde ele vem, ai não sei que parametro colocar ali*/
-
-
-    // checa se existe um produto com o código que o usuário entrou
-    while(i<quant_produtos){
-        if(pdt->id == idremove)
-        {
-            existe++;
-            break;
-        }
+    indice = verificarProduto(idremove);
+    if(indice == -1){
+        return false;
     }
 
-    /* trabalha com duas opções, se o produto existe, então ele verifica
-    se existe um pedido com esse produto, que era pra ser o while ali dentro,
-    se não existe, vai informar uma mensagem de erro que o produto não existe */
-    if(existe>0)
-    {
-        while()
-        /* deve haver algum parametro que eu não sei como colocar, se eu colocar um parametro pedido *ponteiro funciona? Pois como a struct
-        pedido nao está aqui, o VS Code fica acusando erro */
-        if(existepedido>0){
-            printf("Produto não pode ser excluído pois existe um pedido!\n");
-        } else {
-            /* não sei como implementar o pedido de confirmação de exclusão aqui, 
-            seria com uma simples opção de scanf ou algo relacionado ao ncurses?*/
-        }
-    } else {
-        printf("Erro, id não cadastrado!\n");
+    // verificarPedido();
+    if(verificarPedido() != -1){
+        return false;
     }
+
+    for(int i=indice; i<(pdt->quant - 1); i++){
+        *((pdt->produtos)+i) = *((pdt->produtos)+i+1);
+    }
+    pdt->quant--;
+
+    return true;
+
 }
 
 void salvarProdutoCSV(){}
