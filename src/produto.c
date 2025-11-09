@@ -18,18 +18,6 @@ typedef struct {
     Produto* produtos; // Ponteiro para structs de produto
 } ListaProduto;
 
-// ==== Váriaveis ====
-
-/*
-A váriavel produtos deve armazenar os produtos de forma dinâmica, use alocação dinâmica, como o malloc()
-
-Começe alocando um espaço inicial (ex.: 10), ao chegar ao limite, aumente o vetor usando realloc(), não faça de 1 em 1 (ex.: +10 depois de atingir o limite)
-Como saber se chegou ao limite? Use quant_produtos e max_produtos para saber, guarde neles também para não se perder.
-*/
-int quant_produtos; // Quantidade de produtos no vetor 'produtos'
-int max_produtos; // Tamanho do vetor 'produtos'
-Produto* produtos; // Vetor de produtos
-
 // ==== Funções ====
 
 Produto* consultarProduto(int id) {
