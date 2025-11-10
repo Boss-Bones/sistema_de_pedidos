@@ -33,6 +33,16 @@ typedef struct PessoaJuridica
 
 } PessoaJuridica;
 
+// lista de clientes
+
+typedef struct
+{   // documentação análoga à ListaProduto. Para consultar verifique a branch produto
+
+    int quant; // Quantidade atual de clientes
+    int max; // Quantidade máxima a ser armazenada
+    cliente* clientes; // Ponteiro para structs de cliente
+
+} ListaCliente;
 
 void inserirCliente(){}
 
