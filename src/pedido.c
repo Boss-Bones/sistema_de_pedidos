@@ -23,3 +23,26 @@ typedef struct ItemPedido
      double subtotal; // O valor total para este item (quantidade multiplicada pelo preco do Produto).
 
 } ItemPedido;
+
+
+
+// ==== Funções ====
+
+
+
+int verificarPedido(int id) {
+    
+    //Implementação do caso de uso "Analisar pedido"
+
+    
+    for(int i = 0; i < quant_pedidos; i++) {
+        // Se o produto do indice i tiver o id correspondente
+        if( (*(pedidos+i)).id == id ) {
+            // Retorna o indice
+            return i;
+        }
+    }
+
+    // Passou por todo o vetor e não encontrou nenhum com id correspondente, retorna -1
+    return -1;
+}
