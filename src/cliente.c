@@ -40,7 +40,24 @@ void listarCliente(){}
 
 void editarCliente(){}
 
-void removerCliente(){}
+bool removerCliente(ListaCliente *clt, int idremove){
+    
+    int indice;
+
+    // usuario entra com o id do cliente e a funcao verifica se existe o cliente
+    indice = verificarCliente(idremove);
+    if(indice == -1){
+        return false;
+    }
+
+    for(int i=indice; i<(clt->quant - 1); i++){
+        clt->clientes[i] = clt->clientes[i+1];
+    }
+    clt->quant--;
+
+    return true;
+}
+
 
 void salvarClienteCSV(){}
 
