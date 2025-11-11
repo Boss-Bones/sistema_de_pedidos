@@ -142,6 +142,49 @@ cliente* consultarCliente(ListaCliente lclientes, int id) {
     return NULL;
 }
 
+// função para inserir um cliente
+
+bool InserirCliente(cliente novo_cliente, ListaCliente *clt)
+{
+    if (clt == NULL) // segurança
+    {
+        return false;
+    }
+
+    // verificar se o vetor de clientes está cheio
+    if (clt->quant == clt->max)
+    {
+        // dobrar o tamanho do vetor (otimização)
+        // se tiver 0 adotar o tamanho padrão 10
+
+        int nova_capacidade = (clt->max == 0) ? 10 : clt->max * 2;
+        int novo_tamanho_bytes = nova_capacidade * sizeof(cliente);
+
+        // realloc para aumentar o tamanho do vetor de clientes
+        // usei um ponteiro temporario para armazenar a nova lista por motivos de segurança
+
+        cliente* temp = realloc(clt->clientes, novo_tamanho_bytes);
+        
+        // ver se o realloc deu certo
+
+        if(temp == NULL)
+        {
+            return false;
+        }
+        // se chegar aqui é porque deu certo pode usar o novo tamanho do vetor de clientes
+
+        clt->clientes = temp;
+        clt->max = nova_capacidade;
+
+    }
+
+    clt->clientes[clt->quant] = novo_cliente; // inserindo o novo cliente
+    clt->quant++; // nova quantidade de clientes
+
+    return true;
+    
+}
+
 void listarCliente(){}
 
 void editarCliente(){}
