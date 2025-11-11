@@ -53,6 +53,28 @@ typedef struct
 
 } ListaCliente;
 
+// lista de cpfs
+
+typedef struct
+{   // documentação análoga à ListaProduto. Para consultar verifique a branch produto
+
+    int quant; // Quantidade atual de cpfs
+    int max; // Quantidade máxima a ser armazenada
+    PessoaFisica* cpfs; // Ponteiro para structs de cpf
+
+} ListaCpf;
+
+// lista de cnpjs
+
+typedef struct
+{   // documentação análoga à ListaProduto. Para consultar verifique a branch produto
+
+    int quant; // Quantidade atual de cnpjs
+    int max; // Quantidade máxima a ser armazenada
+    PessoaJuridica* cnpjs; // Ponteiro para structs de cnpj
+
+} ListaCnpj;
+
 // Função para verificar se o id que o cliente digitou pode ser usado
 
 bool verificar_id(ListaCliente *clt, int id)
@@ -67,9 +89,40 @@ bool verificar_id(ListaCliente *clt, int id)
             return false; // id já cadastrado
         }
     }
-    
+
     return true;
 }
+
+// função para verificar se o cpf já existe (faz parte de "Análisar cliente")
+
+bool verificar_cpf(ListaCpf *clt, char *cpf_digitado)
+{
+    int i;
+    for(i = 0; i < clt->quant; i++)
+    {
+        if(strcmp(cpf_digitado, clt->cpfs[i].cpf) == 0)
+        {
+            return false; // cpf já cadastrado
+        }
+    }
+    return true;
+}
+
+// função para verificar se o cnpj já existe (faz parte de "Análisar cliente")
+
+bool verificar_cnpj(ListaCnpj *clt, char *cnpj_digitado)
+{
+    int i;
+    for(i = 0; i < clt->quant; i++)
+    {
+        if(strcmp(cnpj_digitado, clt->cnpjs[i].cnpj) == 0)
+        {
+            return false; // cnpj já cadastrado
+        }
+    }
+    return true;
+}
+
 void listarCliente(){}
 
 void editarCliente(){}
