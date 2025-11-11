@@ -27,7 +27,7 @@ typedef struct ItemPedido
 typedef struct {
     int quant;
     int max;
-    pedido pedidos;
+    pedido *pedidos;
 } ListaPedido;
 
 
@@ -36,14 +36,14 @@ typedef struct {
 
 
 
-int verificarPedido(int id, ) {
+int verificarPedido(int id, ListaPedido lpedidos) {
     
     //Implementação do caso de uso "Analisar pedido"
 
     
-    for(int i = 0; i < quant_pedidos; i++) {
+    for(int i = 0; i < lpedidos.quant; i++) {
         // Se o produto do indice i tiver o id correspondente
-        if( (*(pedidos+i)).id == id ) {
+        if( (*(lpedidos.pedidos+i)).id == id ) {
             // Retorna o indice
             return i;
         }
