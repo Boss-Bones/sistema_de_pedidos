@@ -24,13 +24,19 @@ typedef struct ItemPedido
 
 } ItemPedido;
 
+typedef struct {
+    int quant;
+    int max;
+    pedido pedidos;
+} ListaPedido;
+
 
 
 // ==== Funções ====
 
 
 
-int verificarPedido(int id) {
+int verificarPedido(int id, ) {
     
     //Implementação do caso de uso "Analisar pedido"
 
