@@ -123,6 +123,25 @@ bool verificar_cnpj(ListaCnpj *clt, char *cnpj_digitado)
     return true;
 }
 
+cliente* consultarCliente(ListaCliente lclientes, int id) {
+    /*
+    Implementação do caso de uso "Consultar cliente"
+
+    Retorna:
+    - Valor do tipo cliente (Se tiver um produto com id correspondente)
+    - NULL (Se não tiver um cliente com id correspondente)
+
+    Segui o mesmo padrão das outras funções, se estiver errado, por favor corrija ou me avise que está errado
+    */
+
+    int i_cliente = verificarCliente(lclientes, id); // sem funcao ainda
+
+    if(i_cliente != -1) {
+        return lclientes.clientes+i_cliente;
+    }
+    return NULL;
+}
+
 void listarCliente(){}
 
 void editarCliente(){}
