@@ -3,6 +3,14 @@
 #include <ctype.h>
 #include <string.h>
 
+// Definir números para cpf e cnpj
+typedef enum 
+{
+    TIPO_PESSOA_FISICA, // Valor 0
+    TIPO_PESSOA_JURIDICA  // Valor 1
+
+} TipoCliente;
+
 typedef struct cliente
 {
    // Representa um cliente do sistema.
@@ -11,6 +19,7 @@ typedef struct cliente
     char nome[100]; // O nome do cliente.
     char endereco[200]; // O endereço do cliente.
     char telefone[20]; // O número de telefone do cliente.
+    TipoCliente tipo; // O tipo de cliente (pessoa física ou jurídica)
 
 } cliente;
 
@@ -44,8 +53,23 @@ typedef struct
 
 } ListaCliente;
 
-void inserirCliente(){}
+// Função para verificar se o id que o cliente digitou pode ser usado
 
+bool verificar_id(ListaCliente *clt, int id)
+{
+    int i;
+    // verificar se o id do cliente já existe usando clt->clientes[i]
+
+    for(i = 0; i < clt->quant; i++)
+    {
+        if(clt->clientes[i].id == id)
+        {
+            return false; // id já cadastrado
+        }
+    }
+    
+    return true;
+}
 void listarCliente(){}
 
 void editarCliente(){}
