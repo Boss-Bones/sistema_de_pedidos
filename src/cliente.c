@@ -77,7 +77,7 @@ typedef struct
 
 // Função para verificar se o id que o cliente digitou pode ser usado
 
-bool verificar_id(ListaCliente *clt, int id)
+bool verificar_id_cliente(ListaCliente *clt, int id)
 {
     int i;
     // verificar se o id do cliente já existe usando clt->clientes[i]
@@ -134,7 +134,7 @@ cliente* consultarCliente(ListaCliente lclientes, int id) {
     Segui o mesmo padrão das outras funções, se estiver errado, por favor corrija ou me avise que está errado
     */
 
-    int i_cliente = verificar_id(&lclientes, id);
+    int i_cliente = verificar_id_cliente(&lclientes, id);
 
     if(i_cliente != false) {
         return lclientes.clientes+i_cliente;
