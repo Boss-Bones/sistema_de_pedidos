@@ -20,7 +20,7 @@ typedef struct {
 
 // ==== Funções ====
 
-Produto* consultarProduto(int id) {
+Produto* consultarProduto(ListaProduto lprodutos, int id) {
     /*
     Implementação do caso de uso "Consultar produto"
 
@@ -32,15 +32,15 @@ Produto* consultarProduto(int id) {
     - NULL (Se não tiver um produto com id correspondente)
     */
 
-    int i_produto = verificarProduto(id);
+    int i_produto = verificarProduto(lprodutos, id);
 
-    if(i_produto != NULL) {
-        return produtos+i_produto;
+    if(i_produto != -1) {
+        return lprodutos.produtos+i_produto;
     }
     return NULL;
 }
 
-int verificarProduto(int id) {
+int verificarProduto(ListaProduto lprodutos, int id) {
     /*
     Implementação do caso de uso "Analisar produto"
 
@@ -53,9 +53,9 @@ int verificarProduto(int id) {
     */
 
     // Passa por todo o vetor
-    for(int i = 0; i < quant_produtos; i++) {
+    for(int i = 0; i < lprodutos.quant; i++) {
         // Se o produto do indice i tiver o id correspondente
-        if( (*(produtos+i)).id == id ) {
+        if( (*(lprodutos.produtos+i)).id == id ) {
             // Retorna o indice
             return i;
         }
