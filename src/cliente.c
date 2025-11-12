@@ -93,7 +93,23 @@ bool verificar_id_cliente(ListaCliente *clt, int id)
     return true;
 }
 
-// função para verificar se o cpf já existe (faz parte de "Análisar cliente")
+// Função que busca id de um cliente que já existe (ajuda no consultar e remover cliente)
+
+int buscar_id_cliente(ListaCliente* clt, int id)
+{
+    int i;
+    for(i = 0; i < clt->quant; i++)
+    {
+        if(id == clt->clientes[i].id) // Achou o id, cliente existe na lista
+        {
+            return i; // Retorna a posição do cliente na lista
+        }
+    }
+
+    return -1; // Cliente não existe
+}
+
+// Função para verificar se o cpf já existe (faz parte de "Análisar cliente")
 
 bool verificar_cpf(ListaCpf *clt, char *cpf_digitado)
 {
@@ -123,21 +139,31 @@ bool verificar_cnpj(ListaCnpj *clt, char *cnpj_digitado)
     return true;
 }
 
-cliente* consultarCliente(ListaCliente lclientes, int id) {
+cliente* consultarCliente(ListaCliente *lclientes, int id) {
     /*
     Implementação do caso de uso "Consultar cliente"
 
     Retorna:
-    - Valor do tipo cliente (Se tiver um produto com id correspondente)
+    - Valor do tipo cliente (Se tiver um cliente com id correspondente)
     - NULL (Se não tiver um cliente com id correspondente)
 
     Segui o mesmo padrão das outras funções, se estiver errado, por favor corrija ou me avise que está errado
     */
 
-    int i_cliente = verificar_id_cliente(&lclientes, id);
+    /* Fiz algumas mudanças nessa função com o objetivo de otimizá-la:
 
-    if(i_cliente != false) {
-        return lclientes.clientes+i_cliente;
+       1 Troquei o parâmetro para um ponteiro para a lista ao invés da lista toda
+       2 A função passa agora a retornar o endereço da lista de clientes
+       3 Isso torna a função mais rápida, pois fazer uma cópia inteira da lista é desnecessário,
+         basta apenas pega o endereço da lista original para pegar a informação necessária
+         
+         Assinado: Lucas
+    */
+
+    int i_cliente = buscar_id_cliente(lclientes, id);
+
+    if(i_cliente != -1) {
+        return &lclientes->clientes[i_cliente];
     }
     return NULL;
 }
@@ -194,8 +220,8 @@ bool removerCliente(ListaCliente *clt, int idremove){
     int indice;
 
     // usuario entra com o id do cliente e a funcao verifica se existe o cliente
-    indice = verificarCliente(idremove);
-    if(indice == -1){
+    indice = buscar_id_cliente(clt, idremove); // mudando para nova função
+    if(indice == -1){ // id não exsite
         return false;
     }
 
