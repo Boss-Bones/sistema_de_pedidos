@@ -56,11 +56,24 @@ int verificarPedido(int id, ListaPedido lpedidos) {
     return -1;
 }
 
-/* desculpe, eu deixei 3 funções porque, primieiro se o código do pedido existe.Se existe 
-deve retornar uma mensagem de erro. Mas se não existe, então o usuário insere o código do cliente,
-aí nessa parte eu imaginei que seria outra vez papel da interface. Então se o cliente não existir,
-mensagem de erro, mas se existir, o usuário entra outra vez com outro código do produto, que eu
-imaginei que outra vez seria papel da interface. Na última, eu me confundi e não consegu implementar*/
+
+bool analisarPedido(ListaPedido *pdd, int id)
+{
+    int i;
+    // verificar se o id do pedido já existe usando pdd->pedidos[i]
+
+    for(i = 0; i < pdd->quant; i++)
+    {
+        if(pdd->pedidos[i].id == id)
+        {
+            return false; // id já cadastrado
+        }
+    }
+
+    return true;
+}
+
+/* em andamento*/
 
 bool cadastrarPedido1(int id, ListaPedido pdd){
     
