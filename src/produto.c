@@ -65,6 +65,22 @@ int verificarProduto(ListaProduto lprodutos, int id) {
     return -1;
 }
 
+bool analisarProduto(ListaProduto *pdt, int id)
+{
+    int i;
+    // verificar se o id do produto já existe usando pdt->produtos[i]
+
+    for(i = 0; i < pdt->quant; i++)
+    {
+        if(pdt->produtos[i].id == id)
+        {
+            return true; // produto existe
+        }
+    }
+
+    return false;
+}
+
 // Clebio, te orientei pelo Whatsapp, me fale qualquer dúvida
 bool inserirProduto(Produto prd, ListaProduto *pdt){
 
