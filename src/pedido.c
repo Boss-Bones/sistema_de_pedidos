@@ -75,7 +75,24 @@ bool analisarPedido(ListaPedido *pdd, int id)
 
 /* em andamento*/
 
-bool cadastrarPedido1(int id, ListaPedido pdd){
+bool cadastrarPedido(int id, ListaPedido pdd){
+
+    /*
+    1) usuário informa o código identificador do pedido (interface)
+        - função da interface chama função analisarPedido()
+            se o código ja existir, retornar mensagem de erro e retornar para tela de cadastro
+            para o usuário preencher o campo de código novamente
+        - se não existir, próximo passo
+
+    2) usuário informa o código do cliente do referido pedido (interface)
+        - função da interface chama função buscar_id_cliente()
+            se o código não existir, retornar mensagem de erro e retornar para tela de cadastro
+            para o usuário preencher o campo de código de cliente novamente
+        - se existir, próximo passo
+
+    3) usuário informa o código do produto a ser cadastrado como item do pedido (interface)
+        - continua... precisa da função analisarProduto
+    */
     
     // verifica se o código do pedido já existe. Se existir, deve retornar uma mensagem de erro
     if(verificarPedido(id, pdd.pedidos) == -1){
@@ -86,20 +103,3 @@ bool cadastrarPedido1(int id, ListaPedido pdd){
     return false;
 }
 
-bool cadastrarPedido2(int id, ListaCliente clt){
-    
-        
-    // verifica se o código do cliente existe. Se não existir, deve retornar uma mensagem de erro
-    if(buscar_id_cliente(clt, idclt) != -1){
-        return true;
-    }
-    
-    return false;
-}
-
-bool cadastrarPedido3(int id, ListaProduto prd){
-    
-        
-    /* desculpa essa ficou incompleta, eu fiquei confuso se vai ter uma lista de Itens pedidos
-    ou usa a lista de pedidos */
-}
