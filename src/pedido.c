@@ -12,6 +12,7 @@ typedef struct pedido
     para a classe Cliente. */
     char data[11]; // A data em que o pedido foi realizado (ex: "dd/mm/aaaa").
     double total; // O valor total do pedido, que seria a soma dos subtotais de todos os itens.
+    ItemPedido *itens;
 
 } pedido;
 
@@ -75,7 +76,7 @@ bool analisarPedido(ListaPedido *pdd, int id)
 
 /* em andamento*/
 
-bool cadastrarPedido(int id, ListaPedido pdd){
+bool cadastrarPedido(ListaPedido *pdd){
 
     /*
     1) usuário informa o código identificador do pedido (interface)
@@ -95,10 +96,7 @@ bool cadastrarPedido(int id, ListaPedido pdd){
     */
     
     // verifica se o código do pedido já existe. Se existir, deve retornar uma mensagem de erro
-    if(verificarPedido(id, pdd.pedidos) == -1){
-        
-        return true;
-    }
+    
     
     return false;
 }
