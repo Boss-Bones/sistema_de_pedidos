@@ -77,6 +77,30 @@ void printOpcoesJanela(WINDOW* janela, char opcoes[][50], int q) {
 
 }
 
+// função especifica para cabeçalho do cliente pois são nomes mais longos
+// optei por usar uma fun;áo diferente para náo dar conflito
+
+void printCabecalhoCliente(WINDOW* janela, int y, int x, int largura) {
+    int pos_id   = x;
+    int pos_nome = x + (largura * 0.10); 
+    int pos_tel  = x + (largura * 0.45); 
+    int pos_end  = x + (largura * 0.65); 
+
+    // Estilo para diferenciar o cabeçalho
+    wattron(janela, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+    
+    // Limpa a linha
+    mvwhline(janela, y, x, ' ', largura);
+
+    // Imprime os títulos nas posições exatas
+    mvwprintw(janela, y, pos_id,   "ID");
+    mvwprintw(janela, y, pos_nome, "Nome");
+    mvwprintw(janela, y, pos_tel,  "Telefone");
+    mvwprintw(janela, y, pos_end,  "Endereco");
+
+    wattroff(janela, COLOR_PAIR(1) | A_BOLD | A_UNDERLINE);
+}
+
 void printPLinhaUni(WINDOW* janela, int y, int x, int c, char tags[][50], int q) {
     /*
     Função para fazer a primeira linha da tabela, essa linha terá tags de qualqer seja a struct
@@ -118,6 +142,26 @@ void printLinhaPedido(WINDOW* janela, int y, int x, int c, pedido pd) {
     mvwprintw(janela, y, x+((c)/4)*2, "%s", pd.data);
     mvwprintw(janela, y, x+((c)/4)*3, "%.2lf reais", pd.total);
 }
+
+// função para mostra a linha da tabela de clientes
+// na hora de imprimir adicionei % para cuidar de textos maiores que o espaço alocado
+
+void printLinhaCliente(WINDOW* janela, int y, int x, int largura, cliente cl) {
+    
+    mvwhline(janela, y, x, ' ', largura); // limpeza de linha
+    mvwprintw(janela, y, x, "%d", cl.id);
+    mvwprintw(janela, y, x + 6, "%.25s", cl.nome); 
+    mvwprintw(janela, y, x + 35, "%s", cl.telefone);
+    mvwprintw(janela, y, x + 55, "%.30s", cl.endereco);
+
+    /* IMPORTANTE
+
+        resolver a questão da largura, estudar maneiras de lidar com o tamanho do terminal
+        definir se continua com largura fixa ou varável
+    */
+    
+}
+
 
 // Inspiração para criação de mais listas
 void mostrarListaPedidos(WINDOW* janela, int y, ListaPedido* lp) {
@@ -236,6 +280,129 @@ void mostrarListaPedidos(WINDOW* janela, int y, ListaPedido* lp) {
     }
 }
 
+void mostrarListaClientes(WINDOW* janela, int y, ListaCliente* clt) {
+    int hj, wj; getmaxyx(janela, hj, wj); // Dimensões da janela
+    char tags[4][200] = {"ID do cliente", "nome", "endereco", "telefone"}; // Tags da lista
+    // --- PROTEÇÃO CONTRA LISTA VAZIA ---
+    if (clt->quant == 0) {
+        mvwprintw(janela, y+1, 2, "Nenhum cliente cadastrado.");
+        wrefresh(janela);
+        // Espera um 'q' ou qualquer tecla para voltar
+        while(wgetch(janela) != 'q'); 
+        return;
+    }
+    // Linha das tags
+    printCabecalhoCliente(janela, y, 2, wj-4);
+    // e as demais linhas, que já são os itens em si
+    for(int i = 0; i < (*clt).quant && (y+1)+i < hj-3; i++) {
+        printLinhaCliente(janela, y+1+i, 2, wj-4, *((*clt).clientes+i));
+    }
+    if((*clt).quant > (hj-3)-(y+1)) {
+        mvwprintw(janela, hj-3, 2, "...");
+    }
+    // ..., a primeira linha está selecionada
+    wattron(janela, COLOR_PAIR(2));
+    printLinhaCliente(janela, y+1, 2, wj-4, *((*clt).clientes));
+    wattroff(janela, COLOR_PAIR(2));
+    // Atualizando a janela
+    refresh();
+    wrefresh(janela);
+
+    // Deslocando
+    int ini=y+1, sel=0, sely=ini, entr; // Y do inicio da lista; Seleção; Y da seleção; Entrada do teclado
+    while(true) {
+        entr = wgetch(janela);
+        switch(entr) {
+            case KEY_UP:
+                if(!(sely == y+1 && sel > 0)) { // Ainda não é o primeiro aparecendo visualmente
+                    if(sel) { // Não sendo 0, ainda dá para subir
+                        // A linha selecionada perde a seleção
+                        printLinhaCliente(janela, sely, 2, wj-4, *((*clt).clientes+sel));
+                        
+                        // Muda a seleção
+                        sel--;
+                        sely--;
+
+                        // A linha não selecionada virá a selecionada
+                        wattron(janela, COLOR_PAIR(2));
+                        printLinhaCliente(janela, sely, 2, wj-4, *((*clt).clientes+sel));
+                        wattroff(janela, COLOR_PAIR(2));
+
+                        //Atualiza
+                        refresh();
+                        wrefresh(janela);
+                    }
+                } else {
+                    // Diminui na seleção
+                    sel--;
+
+                    // Scrolla para cima
+                    wattron(janela, COLOR_PAIR(2));
+                    printLinhaCliente(janela, y+1, 2, wj-4, *((*clt).clientes+sel));
+                    wattroff(janela, COLOR_PAIR(2));
+                    for(int i = 1; i < (hj-3)-(y+1); i++) {
+                        printLinhaCliente(janela, y+1+i, 2, wj-4, *((*clt).clientes+sel+i));
+                    }
+
+                    // Ao scrollar, os últimos conteúdos sumiriam, voltar os 3 pontinhos
+                    mvwprintw(janela, hj-3, 2, "...");
+
+                    // Atualiza
+                    refresh();
+                    wrefresh(janela);
+                }
+                break;
+            case KEY_DOWN:
+                if(!(sely == hj-4 && sel < (*clt).quant-1)) { // Ainda não é o último aparecendo visualmente
+                    if(sel < (*clt).quant-1) { // Ainda menor que o último índice, ainda dá para descer
+                        // A linha selecionada perde a seleção
+                        printLinhaCliente(janela, sely, 2, wj-4, *((*clt).clientes+sel));
+
+                        // Muda a seleção
+                        sel++;
+                        sely++;
+
+                        // A linha não selecionada virá a selecionada
+                        wattron(janela, COLOR_PAIR(2));
+                        printLinhaCliente(janela, sely, 2, wj-4, *((*clt).clientes+sel));
+                        wattroff(janela, COLOR_PAIR(2));
+
+                        //Atualiza
+                        refresh();
+                        wrefresh(janela);
+                    }
+                } else {
+                    // Adiciona na seleção
+                    sel++;
+
+                    // Scrolla para baixo
+                    for(int i = 0; i < (hj-3)-(y+1)-1; i++) {
+                        printLinhaCliente(janela, y+1+i, 2, wj-4, *((*clt).clientes+sel-((hj-3)-(y+1)-1)+i));
+                    }
+                    wattron(janela, COLOR_PAIR(2));
+                    printLinhaCliente(janela, hj-4, 2, wj-4, *((*clt).clientes+sel));
+                    wattroff(janela, COLOR_PAIR(2));
+
+                    // Se chegar ao final, tirar os 3 pontinhos
+                    if(sel == (*clt).quant-1) {
+                        mvwprintw(janela, hj-3, 2, "   ");
+                    }
+
+                    //Atualiza
+                    refresh();
+                    wrefresh(janela);
+                }
+                break;
+            case 'q':
+                delwin(janela);
+                clear();
+                refresh();
+                return;
+                break;
+        }
+    }
+}
+
 void criarCaixa(WINDOW* janela, int y, int x, int c, int a) {
     /*
     Função para criar uma caixa interna a janela
@@ -285,6 +452,25 @@ void ligarBlur(WINDOW* janela) {
 /* Vazio ainda */
 
 // =========== Menus ===========
+
+void mostrarMenuClientes(ListaCliente* clt)
+{
+    int h, w; getmaxyx(stdscr, h, w); // Altura e largura da janela stdscr
+    int hj = h-h/10, wj = w-w/10; // Altura e largura da janela desse menu
+    int yj = h/2-hj/2, xj = w/2-wj/2; // Localização (x,y) da janela desse menu
+    char titulo[50] = "Menu de clientes"; // Título da janela
+    char opcoes[6][50] = {"q", "Voltar", "a", "Adicionar", "r", "Remover"};
+
+    WINDOW* janela = newwin(hj, wj, yj, xj); // criando a janela do menucliente
+    box(janela, 0, 0); // desenhando contorno
+    keypad(janela, true); // Uso de teclas especiais
+    printTituloJanela(janela, titulo, 15); // Título
+    printOpcoesJanela(janela, opcoes, 6);
+
+    mvwprintw(janela, 1, 1, " v Lista de clientes");
+
+    getch();
+}
 
 void mostrarMenuPedidos(ListaPedido* lp) {
     // Váriaveis
