@@ -21,7 +21,10 @@ typedef struct ItemPedido
     /* Esta é uma estrutura (struct) associativa. Ela representa um item específico dentro de um pedido, conectando
     as estruturas Pedido e Produto. */
 
-     int pedidoId; // O id do pedido ao qual este item pertence.
+    
+     //int pedidoId; // O id do pedido ao qual este item pertence.
+     /* duvida, ItemPedido faz parte de pedido, então porque repetir o id do pedido aqui? */
+
      int produtoId; // O id do produto que está sendo comprado.
      int quantidade; // A quantidade daquele produto específico neste pedido.
      double subtotal; // O valor total para este item (quantidade multiplicada pelo preco do Produto).
@@ -76,7 +79,7 @@ bool analisarPedido(ListaPedido *pdd, int id)
 
 /* em andamento*/
 
-bool cadastrarPedido(ListaPedido *pdd){
+bool cadastrarPedido(int idpedido, int idcliente, int idproduto, int quant, double preco, ListaPedido *pdd){
 
     /*
     1) usuário informa o código identificador do pedido (interface)
@@ -92,12 +95,55 @@ bool cadastrarPedido(ListaPedido *pdd){
         - se existir, próximo passo
 
     3) usuário informa o código do produto a ser cadastrado como item do pedido (interface)
-        - continua... precisa da função analisarProduto
+        - função da interface chama função analisarProduto()
+            se o código não existir, retornar mensagem de erro e retornar para tela de cadastro
+            para o usuário preencher o campo de código de cliente novamente
+        - se existir, próximo passo
+
+    4) o usuário pode inserir mais de um produto na função da interface, pois um pedido pode
+    ter vários produtos, a função da interface deveria pegar o valor unitário do produto
+    então esta função aqui pega esse valor em double preco para calcular o subtotal
     */
+
+    // logica do Lucas
+     if (pdd->quant == pdd->max)
+    {
+        // dobrar o tamanho do vetor (otimização)
+        // se tiver 0 adotar o tamanho padrão 10
+
+        int nova_capacidade = (pdd->max == 0) ? 10 : pdd->max * 2;
+        int novo_tamanho_bytes = nova_capacidade * sizeof(pedido);
+
+        // realloc para aumentar o tamanho do vetor de clientes
+        // usei um ponteiro temporario para armazenar a nova lista por motivos de segurança
+
+        pedido* temp = realloc(pdd->pedidos, novo_tamanho_bytes);
+        
+        // ver se o realloc deu certo
+
+        if(temp == NULL)
+        {
+            return false;
+        }
+        // se chegar aqui é porque deu certo pode usar o novo tamanho do vetor de clientes
+
+        pdd->pedidos = temp;
+        pdd->max = nova_capacidade;
+
+    }
+
+    pdd->pedidos[pdd->quant].total = idpedido;
+
+    pdd->pedidos[pdd->quant].id = idpedido;
+    pdd->pedidos[pdd->quant].clienteId = idcliente;
+    // não sei de onde a data vai vir
+    pdd->pedidos[pdd->quant].itens->produtoId = idproduto;
+    pdd->pedidos[pdd->quant].itens->quantidade = quant;
+    pdd->pedidos[pdd->quant].itens->subtotal = preco*quant;
+    //pdd->pedidos[pdd->quant].total = não sei como colocar o total aqui
+
+    pdd->quant++;
     
-    // verifica se o código do pedido já existe. Se existir, deve retornar uma mensagem de erro
-    
-    
-    return false;
+    return true;
 }
 
