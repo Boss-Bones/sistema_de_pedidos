@@ -20,10 +20,10 @@ int salvarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
 
         if(clt->clientes[i].tipo == 0)
         {
-            // fazwr funçoes analisarCpf() e analisarCnpj()
-            fprintf(pt,";%s\n", cpf->cpfs/*[analisarCpf()]*/.cpf);
+            // fazwr funçoes buscar_cpf() e buscar_cnpj()
+            fprintf(pt,";%s\n", cpf->cpfs[buscar_cpf(cpf, clt->clientes[i].id)].cpf);
         } else {
-            fprintf(pt,";%s\n", cnpj->cnpjs/*[analisarCnpj()]*/.cnpj);
+            fprintf(pt,";%s\n", cnpj->cnpjs[buscar_cnpj(cnpj, clt->clientes[i].id)].cnpj);
         }
 
         // obs csv usa ponto como separador decimal, Excel do Brasil usa vírgula, fica essa dúvida em aberto
@@ -33,7 +33,70 @@ int salvarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
 
     return 0;
     
-}
+} // fim de salavrCliente
+
+
+
+int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
+    FILE *pt;
+
+    int contador=0;
+    char tempchar[200];
+
+    // inicialização de segurança
+    pdt->quant=0;
+    pdt->max=0;
+    pdt->produtos = NULL;
+
+    pt = fopen("produtos.csv", "r");
+
+    // se o arquivo não existe
+    if(pt == NULL){
+        return -1;
+    }
+
+    // se o arquivo existe
+
+    /* tempchar é uma variável auxiliar que irá pegar cada linha do arquivo para contar quantos registros no total existem no arquivo, e cada linha escrita em tempchar incrementa a variável
+    contador, que serve para armazenar o valor total de registros */
+    while((fgets(tempchar, sizeof(tempchar), pt)) != NULL){
+        contador++;
+    }
+
+    // se o arquivo existe mas está vazio, aloca 10 espaços na memória
+    if(contador == 0){
+        pdt->produtos = (Produto*)malloc( 10 * sizeof(Produto));
+        pdt->max = 10;
+        fclose(pt);
+        return 0;
+    }
+
+    /* Uma vez que contador tem o valor total de registros e é maior que 0,
+    ela serve pra auxiliar a alocação de memória para o vetor de produtos e
+    guardar a quantidade atual na variável de quantidade em ListaProduto, pdt->quant */
+
+    pdt->quant = contador;
+    pdt->max = contador*2;
+    pdt->produtos = (Produto*)malloc( pdt->max * sizeof(Produto));
+
+    fseek(pt, 0, SEEK_SET);
+    /* essa função acima serve pra retornar ao início do arquivo, pois depois da checagem da
+    quantidde de registros, o ponteiro de leitura estará posicionado no final do arquivo */
+
+    
+    /* Por fim o for usa a variável contador como base para saber quantos registros serão
+    inseridos no vetor */
+
+    for(int i=0; i<(pdt->quant); i++){
+        fscanf(pt, "%d;%99[^;];%lf;%d\n", &pdt->produtos[i].id, pdt->produtos[i].descricao, &pdt->produtos[i].preco, &pdt->produtos[i].estoque);
+        /* 99[^;] = leia tudo enquanto não for ponto e vírgula, fica no lugar de %s para ler a descrição toda e
+        não parar de ler nos espaços */
+    }
+
+    fclose(pt);
+
+    return 0;
+} // fim de carregarCliente
 
 
 // Funções de produtos ------------------------------------------------------------------------
