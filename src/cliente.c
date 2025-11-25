@@ -211,6 +211,47 @@ bool InserirCliente(cliente novo_cliente, ListaCliente *clt)
     
 }
 
+// quando o cliente digitar o cpf na interface chama essa função
+
+bool InserirCpf(ListaCpf *clt, PessoaFisica cpf)
+{
+    if (clt == NULL) // segurança
+    {
+        return false;
+    }
+
+    // verificar se tem espaço na list
+
+    if(clt->quant == clt->max)
+    {
+        // dobrar o tamanho do vetor (otimização)
+        // se tiver 0 adotar o tamanho padrão 10
+
+        int nova_capacidade = (clt->max == 0) ? 10 : clt->max * 2;
+        int novo_tamanho_bytes = nova_capacidade * sizeof(PessoaFisica);
+        PessoaFisica* temp = realloc(clt->cpfs, novo_tamanho_bytes);
+
+        // ver se o realloc deu certo
+
+        if(temp == NULL)
+        {
+            return false;
+        } 
+        
+        // se chegar aqui é porque deu certo pode usar o novo tamanho do vetor de cpfs
+
+        clt->cpfs = temp;
+        clt->max = nova_capacidade;
+
+    }
+    
+    clt->cpfs[clt->quant] = cpf; // inserindo o novo cpf
+    clt->quant++; // incrementando a quantidade
+
+    return true;
+
+}
+
 void listarCliente(){}
 
 void editarCliente(){}
