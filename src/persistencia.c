@@ -4,8 +4,39 @@
 #include "produto.h"
 #include <stdlib.h>
 
+// Funções de clientes ------------------------------------------------------------------------
+int salvarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
+    FILE *pt;
+
+    pt = fopen("clientes.csv", "w");
+
+    // uma boa prática que eu vi no livro 
+    if(pt == NULL){
+        return -1; // se achar que deve ser outro valor pode mudar
+    }
+    
+    for(int i=0; i<clt->quant; i++){
+        fprintf(pt, "%d;%s;%s;%s;%d", clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, clt->clientes[i].tipo);
+
+        if(clt->clientes[i].tipo == 0)
+        {
+            // fazwr funçoes analisarCpf() e analisarCnpj()
+            fprintf(pt,";%s\n", cpf->cpfs/*[analisarCpf()]*/.cpf);
+        } else {
+            fprintf(pt,";%s\n", cnpj->cnpjs/*[analisarCnpj()]*/.cnpj);
+        }
+
+        // obs csv usa ponto como separador decimal, Excel do Brasil usa vírgula, fica essa dúvida em aberto
+    }
+
+    fclose(pt);
+
+    return 0;
+    
+}
 
 
+// Funções de produtos ------------------------------------------------------------------------
 int salvarProduto(ListaProduto *pdt){
     FILE *pt;
 
@@ -28,6 +59,7 @@ int salvarProduto(ListaProduto *pdt){
     return 0;
     
 }
+
 
 int carregarProduto(ListaProduto *pdt){
     FILE *pt;
