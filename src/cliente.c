@@ -284,24 +284,108 @@ bool InserirCpf(ListaCpf *clt, PessoaFisica cpf)
 
 }
 
+// quando o cliente digitar o cnpj na interface chama essa função
+
+bool InserirCnpj(ListaCnpj *clt, PessoaJuridica cnpj)
+{
+    if (clt == NULL) // segurança
+    {
+        return false;
+    }
+
+    // verificar se tem espaço na list
+
+    if(clt->quant == clt->max)
+    {
+        // dobrar o tamanho do vetor (otimização)
+        // se tiver 0 adotar o tamanho padrão 10
+
+        int nova_capacidade = (clt->max == 0) ? 10 : clt->max * 2;
+        int novo_tamanho_bytes = nova_capacidade * sizeof(PessoaJuridica);
+        PessoaJuridica* temp = realloc(clt->cnpjs, novo_tamanho_bytes);
+
+        // ver se o realloc deu certo
+
+        if(temp == NULL)
+        {
+            return false;
+        } 
+        
+        // se chegar aqui é porque deu certo pode usar o novo tamanho do vetor de cnpjs
+
+        clt->cnpjs = temp;
+        clt->max = nova_capacidade;
+
+    }
+    
+    clt->cnpjs[clt->quant] = cnpj; // inserindo o novo cnpjs
+    clt->quant++; // incrementando a quantidade
+
+    return true;
+
+}
+
 void listarCliente(){}
 
 void editarCliente(){}
 
-bool removerCliente(ListaCliente *clt, int idremove){
+bool removerCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj, int idremove){
     
     int indice;
 
     // usuario entra com o id do cliente e a funcao verifica se existe o cliente
     indice = buscar_id_cliente(clt, idremove); // mudando para nova função
+
     if(indice == -1){ // id não exsite
         return false;
     }
+
+    // descobre se tem que tirar cpf ou cnpj
+
+    TipoCliente tipo_remove = clt->clientes[indice].tipo;   
 
     for(int i=indice; i<(clt->quant - 1); i++){
         clt->clientes[i] = clt->clientes[i+1];
     }
     clt->quant--;
+
+    //removendo cpfs e cnpjs
+
+    if(tipo_remove == TIPO_PESSOA_FISICA)
+    {
+        int i_cpf = -1; // posição desse cliente na lista de cpfs
+
+        for(int k = 0; k < cpf->quant; k++) {
+            if (cpf->cpfs[k].id == idremove) { // Achou pelo ID
+                i_cpf = k;
+                break;
+            }
+        }
+        if(i_cpf != -1) { // segurança
+            for(int i=i_cpf; i<(cpf->quant - 1); i++){
+                cpf->cpfs[i] = cpf->cpfs[i+1];
+            }
+            cpf->quant--;
+        }
+    }
+    else
+    {
+        int i_cnpj = -1; // posição desse cliente na lista de cnpjs
+
+        for(int k = 0; k < cnpj->quant; k++) {
+            if (cnpj->cnpjs[k].id == idremove) {
+                i_cnpj = k;
+                break;
+            }
+        }
+        if(i_cnpj != -1) { // segurança
+
+            for(int i=i_cnpj; i<(cnpj->quant - 1); i++){
+                cnpj->cnpjs[i] = cnpj->cnpjs[i+1];
+            }
+            cnpj->quant--;
+        }
+    }
 
     return true;
 }
