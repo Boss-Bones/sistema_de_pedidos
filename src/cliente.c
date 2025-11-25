@@ -109,6 +109,38 @@ int buscar_id_cliente(ListaCliente* clt, int id)
     return -1; // Cliente não existe
 }
 
+
+int buscar_cpf( int cpf, ListaCpf *lcpf)
+{
+    // feita usando e adaptando a lógica de buscar_id_cliente
+    int i;
+    for(i = 0; i < lcpf->quant; i++)
+    {
+        if(cpf == lcpf->cpfs[i].id)
+        {
+            return i; // Retorna a posição do cpf do cliente
+        }
+    }
+
+    return -1; // Cliente não existe
+}
+
+int buscar_cnpj( int cnpj, ListaCnpj *lcnpj)
+{
+    // feita usando e adaptando a lógica de buscar_id_cliente
+    int i;
+    for(i = 0; i < lcnpj->quant; i++)
+    {
+        if(cnpj == lcnpj->cnpjs[i].id)
+        {
+            return i; // Retorna a posição do cpf do cliente
+        }
+    }
+
+    return -1; // Cliente não existe
+}
+
+
 // Função para verificar se o cpf já existe (faz parte de "Análisar cliente")
 
 bool verificar_cpf(ListaCpf *clt, char *cpf_digitado)
@@ -274,10 +306,6 @@ bool removerCliente(ListaCliente *clt, int idremove){
     return true;
 }
 
-
-void salvarClienteCSV(){}
-
-void carregarClienteCSV(){}
 
 // função para validar cpf
 
