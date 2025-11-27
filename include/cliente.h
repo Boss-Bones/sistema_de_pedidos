@@ -4,6 +4,78 @@
 #include <ctype.h>
 #include <string.h>
 
+// Definir números para cpf e cnpj
+typedef enum 
+{
+    TIPO_PESSOA_FISICA, // Valor 0
+    TIPO_PESSOA_JURIDICA  // Valor 1
+
+} TipoCliente;
+
+typedef struct cliente
+{
+   // Representa um cliente do sistema.
+
+    int id; // Um número de identificação único para cada cliente.
+    char nome[100]; // O nome do cliente.
+    char endereco[200]; // O endereço do cliente.
+    char telefone[20]; // O número de telefone do cliente.
+    TipoCliente tipo; // O tipo de cliente (pessoa física ou jurídica)
+
+} cliente;
+
+typedef struct PessoaFisica
+{
+
+    // Representa um cliente pessoa física (CPF)
+
+    int id; // Mesmo número usado na struct cliente
+    char cpf[15]; // Char para incluir os digitos numéricos e especiais como o '-'
+
+} PessoaFisica;
+
+typedef struct PessoaJuridica
+{
+    // Representa um cliente pessoa jurídica (CNPJ)
+
+    int id; // Mesmo número usado na struct cliente
+    char cnpj[19]; // Char para incluir os digitos numéricos e especiais como o '-'
+
+} PessoaJuridica;
+
+// lista de clientes
+
+typedef struct
+{   // documentação análoga à ListaProduto. Para consultar verifique a branch produto
+
+    int quant; // Quantidade atual de clientes
+    int max; // Quantidade máxima a ser armazenada
+    cliente* clientes; // Ponteiro para structs de cliente
+
+} ListaCliente;
+
+// lista de cpfs
+
+typedef struct
+{   // documentação análoga à ListaProduto. Para consultar verifique a branch produto
+
+    int quant; // Quantidade atual de cpfs
+    int max; // Quantidade máxima a ser armazenada
+    PessoaFisica* cpfs; // Ponteiro para structs de cpf
+
+} ListaCpf;
+
+// lista de cnpjs
+
+typedef struct
+{   // documentação análoga à ListaProduto. Para consultar verifique a branch produto
+
+    int quant; // Quantidade atual de cnpjs
+    int max; // Quantidade máxima a ser armazenada
+    PessoaJuridica* cnpjs; // Ponteiro para structs de cnpj
+
+} ListaCnpj;
+
 // Coloque a prototipação da função aqui
 
 bool InserirCliente(cliente novo_cliente, ListaCliente *clt);
