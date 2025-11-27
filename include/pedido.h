@@ -41,10 +41,12 @@ typedef struct {
 
 // Coloque a prototipação da função aqui
 
-int verificarPedido(int id, ListaPedido lpedidos);
+int verificarPedido(int id, ListaPedido *lpedidos);
 
 bool analisarPedido(ListaPedido *pdd, int id);
 
 bool cadastrarItemPedido(pedido *pdd, ItemPedido novo);
+
+bool removerPedido(ListaPedido *pdd, int idRemove);
 
 #endif

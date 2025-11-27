@@ -148,3 +148,33 @@ bool cadastrarItemPedido(pedido *pdd, ItemPedido novo)
     return true;
 
 }
+
+// função para remover pedido
+
+bool removerPedido(ListaPedido *pdd, int idRemove)
+{
+    // Parecido com remover cliente
+    int indice;
+
+    indice = verificarPedido(idRemove, pdd); // descobrindo onde está o pedido que quer remover
+
+    if(indice == -1){ // id não exsite
+        return false;
+    }
+
+    // removendo todos os itens de pedido desse pedido
+
+    free(pdd->pedidos[indice].itens); // libera o espaço alocado dinamicamente
+
+    // removendo o pedido
+
+    int i;
+    for(i = indice; i<pdd->quant-1; i++)
+    {
+        pdd->pedidos[i] = pdd->pedidos[i+1];
+    }
+    pdd->quant--;
+
+    return true;
+
+}
