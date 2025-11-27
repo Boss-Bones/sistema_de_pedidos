@@ -9,14 +9,14 @@
 
 
 
-int verificarPedido(int id, ListaPedido lpedidos) {
+int verificarPedido(int id, ListaPedido *lpedidos) {
     
     //Implementação do caso de uso "Analisar pedido"
 
     
-    for(int i = 0; i < lpedidos.quant; i++) {
+    for(int i = 0; i < lpedidos->quant; i++) {
         // Se o produto do indice i tiver o id correspondente
-        if( (*(lpedidos.pedidos+i)).id == id ) {
+        if( lpedidos->pedidos[i].id == id ) {
             // Retorna o indice
             return i;
         }
@@ -43,9 +43,9 @@ bool analisarPedido(ListaPedido *pdd, int id)
     return true;
 }
 
-/* em andamento*/
+// função para colocar um pedido na lista de pedidos
 
-bool cadastrarPedido(int idpedido, int idcliente, int idproduto, int quant, double preco, ListaPedido *pdd){
+bool cadastrarPedido(pedido novoPdd, ListaPedido *pdd){
 
     /*
     1) usuário informa o código identificador do pedido (interface)
@@ -65,13 +65,15 @@ bool cadastrarPedido(int idpedido, int idcliente, int idproduto, int quant, doub
             se o código não existir, retornar mensagem de erro e retornar para tela de cadastro
             para o usuário preencher o campo de código de cliente novamente
         - se existir, próximo passo
-
-    4) o usuário pode inserir mais de um produto na função da interface, pois um pedido pode
-    ter vários produtos, a função da interface deveria pegar o valor unitário do produto
-    então esta função aqui pega esse valor em double preco para calcular o subtotal
     */
 
     // logica do Lucas
+
+    if(pdd == NULL)
+    {
+        return false; // segurança
+    }
+
      if (pdd->quant == pdd->max)
     {
         // dobrar o tamanho do vetor (otimização)
@@ -98,15 +100,7 @@ bool cadastrarPedido(int idpedido, int idcliente, int idproduto, int quant, doub
 
     }
 
-    pdd->pedidos[pdd->quant].total = idpedido;
-
-    pdd->pedidos[pdd->quant].id = idpedido;
-    pdd->pedidos[pdd->quant].clienteId = idcliente;
-    // não sei de onde a data vai vir
-    pdd->pedidos[pdd->quant].itens->produtoId = idproduto;
-    pdd->pedidos[pdd->quant].itens->quantidade = quant;
-    pdd->pedidos[pdd->quant].itens->subtotal = preco*quant;
-    //pdd->pedidos[pdd->quant].total = não sei como colocar o total aqui
+    pdd->pedidos[pdd->quant] = novoPdd;
 
     pdd->quant++;
     
