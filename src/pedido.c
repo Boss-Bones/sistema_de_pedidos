@@ -2,41 +2,7 @@
 #include "cliente.h"
 #include "produto.h"
 #include <stdbool.h>
-
-typedef struct pedido
-{
-    // Representa uma ordem de compra feita por um cliente.
-
-    int id; // Um número de identificação único para cada pedido.
-    int clienteId; /* Armazena o id do cliente que fez o pedido, servindo como uma chave estrangeira
-    para a classe Cliente. */
-    char data[11]; // A data em que o pedido foi realizado (ex: "dd/mm/aaaa").
-    double total; // O valor total do pedido, que seria a soma dos subtotais de todos os itens.
-    ItemPedido *itens;
-
-} pedido;
-
-typedef struct ItemPedido
-{
-    /* Esta é uma estrutura (struct) associativa. Ela representa um item específico dentro de um pedido, conectando
-    as estruturas Pedido e Produto. */
-
-    
-     //int pedidoId; // O id do pedido ao qual este item pertence.
-     /* duvida, ItemPedido faz parte de pedido, então porque repetir o id do pedido aqui? */
-
-     int produtoId; // O id do produto que está sendo comprado.
-     int quantidade; // A quantidade daquele produto específico neste pedido.
-     double subtotal; // O valor total para este item (quantidade multiplicada pelo preco do Produto).
-
-} ItemPedido;
-
-typedef struct {
-    int quant;
-    int max;
-    pedido *pedidos;
-} ListaPedido;
-
+#include <stdlib.h>
 
 
 // ==== Funções ====
@@ -147,3 +113,44 @@ bool cadastrarPedido(int idpedido, int idcliente, int idproduto, int quant, doub
     return true;
 }
 
+// função para cadastrar itempedido
+
+bool cadastrarItemPedido(pedido *pdd, ItemPedido novo)
+{
+    if(pdd == NULL) // segurança
+    {
+        return false;
+    }
+
+    // verificando se tem espaço no vetor de itens desse pedido
+
+    if(pdd->quant_itens == pdd->max_itens)
+    {   // mesma logica de inserção usada anteirormente em cliente
+        int nova_capacidade = (pdd->max_itens == 0) ? 10 : pdd->max_itens * 2;
+        int novo_tamanho_bytes = nova_capacidade * sizeof(ItemPedido);
+
+        ItemPedido *temp = realloc(pdd->itens, novo_tamanho_bytes); // ponteiro temporário para segurança
+
+        // vendo se o realloc deu certo
+
+        if(temp == NULL)
+        {
+            return false;
+        }
+
+        //se deu certo pode usar a nova capacidade
+
+        pdd->max_itens = nova_capacidade;
+        pdd->itens = temp;
+
+    }
+
+    // inserindo o item
+
+    pdd->itens[pdd->quant_itens] = novo;
+    pdd->total += novo.subtotal; // atualizando o preço do pedido
+    pdd->quant_itens++; // atualizar a quantidade de itens
+
+    return true;
+
+}
