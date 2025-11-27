@@ -51,13 +51,21 @@ int salvarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
 int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     FILE *pt;
 
-    int contador=0;
-    char tempchar[400];
+    int contador=0, contador1=0, contador2=0;
+    char tempchar[400], tempregistro[19];
 
     // inicialização de segurança
     clt->quant=0;
     clt->max=0;
     clt->clientes = NULL;
+
+    cpf->quant = 0;
+    cpf->max = 0;
+    cpf->cpfs = NULL;
+
+    cnpj->quant = 0;
+    cnpj->max = 0;
+    cnpj->cnpjs = NULL;
 
     pt = fopen("clientes.csv", "r");
 
@@ -78,17 +86,30 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     if(contador == 0){
         clt->clientes = (cliente*)malloc( 10 * sizeof(cliente));
         clt->max = 10;
+        cpf->cpfs = (PessoaFisica*)malloc( 10 * sizeof(PessoaFisica));
+        cpf->max = 10;
+        cnpj->cnpjs = (PessoaJuridica*)malloc( 10 * sizeof(PessoaJuridica));
+        cnpj->max = 10;
         fclose(pt);
         return 0;
     }
 
     /* Uma vez que contador tem o valor total de registros e é maior que 0,
-    ela serve pra auxiliar a alocação de memória para o vetor de produtos e
-    guardar a quantidade atual na variável de quantidade em ListaProduto, pdt->quant */
+    ela serve pra auxiliar a alocação de memória para os vetores de clientes, cpf e cnpj e
+    guardar a quantidade atual na variáveis de quantidade quant */
 
     clt->quant = contador;
     clt->max = contador*2;
-    clt->produtos = (cliente*)malloc(clt->max * sizeof(cliente));
+    clt->clientes = (cliente*)malloc(clt->max * sizeof(cliente));
+
+    cpf->quant = contador;
+    cpf->max = contador*2;
+    cpf->cpfs = (PessoaFisica*)malloc(cpf->max * sizeof(PessoaFisica));
+
+    cnpj->quant = contador;
+    cnpj->max = contador*2;
+    cnpj->cnpjs = (PessoaJuridica*)malloc(cpf->max * sizeof(PessoaJuridica));
+
 
     fseek(pt, 0, SEEK_SET);
     /* essa função acima serve pra retornar ao início do arquivo, pois depois da checagem da
@@ -99,18 +120,28 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     inseridos no vetor */
 
     for(int i=0; i<(clt->quant); i++){
-        fscanf(pt, "%d;%99[^;];%199[^;];%19[^;];%d\n", &clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, clt->clientes[i].tipo);
+        fscanf(pt, "%d;%99[^;];%199[^;];%19[^;];%d;%s\n", &clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, clt->clientes[i].tipo, tempregistro);
         /* 99[^;] = leia tudo enquanto não for ponto e vírgula,
         fica no lugar de %s para ler a descrição toda enão parar de ler nos espaços */
 
 
-        // falta a parte dos cpf e cnpj
+    /* a função vai verificar se o cliente é uma pessoa física ou uma pessoa jurídica para saber
+    em qual vetor salvar o cpf ou cnpj*/
+        if(clt->cliente[i].tipo == 0){
+            scanf("%s", cpf->cpfs[contador1].cpf);
+            contador1++;
+        } else {
+            scanf(pt,"%s", cnpj->cnpjs[contador2].cnpj);
+            contador2++;
+        }
     }
 
     fclose(pt);
 
     return 0;
 } // fim de carregarCliente
+
+
 
 
 
