@@ -249,8 +249,45 @@ int carregarProduto(ListaProduto *pdt){
 --------------------------------------------------------------------------------------
 */
 
-int salvarPedido(ListaPedido *pdt){
-    //em andamento...
+int salvarPedido(ListaPedido *pdd){
+    FILE *pt;
+
+    pt = fopen("pedidos.csv", "w");
+
+    // se o arquivo não existe
+    if(pt == NULL){
+        return -1;
+    }
+
+    /* essa função deve pegar o vetor de struct do tipo Pedido que pertence a struct ListaPedido
+    e usar a variável quant de ListaPedido pra saber quantos registros ela deve salvar no arquivo*/
+    for(int i=0; i<pdd->quant; i++){
+        fprintf(pt, "%d;%d;%s;%lf\n", pdd->pedidos[i].id, pdd->pedidos[i].clienteId, pdd->pedidos[i].data, pdd->pedidos[i].total);
+
+        // obs csv usa ponto como separador decimal, Excel do Brasil usa vírgula, fica essa dúvida em aberto
+    }
+
+    fclose(pt);
+    
+}
+
+int salvarItemPedido(ListaPedido *pdd){
+    FILE *pt;
+
+    pt = fopen("itenspedidos.csv", "w");
+
+    // se o arquivo não existe
+    if(pt == NULL){
+        return -1;
+    }
+
+    /* essa função deve pegar o vetor de struct do tipo Pedido que pertence a struct ListaPedido
+    e usar a variável quant de ListaPedido pra saber quantos registros ela deve salvar no arquivo*/
+    for(int i=0; i<pdd->quant; i++){
+        fprintf(pt, "%d;%d;%s;%lf\n", pdd->pedidos[i].id, pdd->pedidos[i].clienteId, pdd->pedidos[i].data, pdd->pedidos[i].total);
+
+        // obs csv usa ponto como separador decimal, Excel do Brasil usa vírgula, fica essa dúvida em aberto
+    }
     
 }
 
