@@ -3,6 +3,7 @@
 #include "pedido.h"
 #include "produto.h"
 #include <stdlib.h>
+#include <string.h>
 
 /*
 --------------------------------------------------------------------------------------
@@ -128,10 +129,10 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     /* a função vai verificar se o cliente é uma pessoa física ou uma pessoa jurídica para saber
     em qual vetor salvar o cpf ou cnpj*/
         if(clt->clientes[i].tipo == 0){
-            scanf("%s", cpf->cpfs[contador1].cpf);
+            strcpy(cpf->cpfs[contador1].cpf, tempregistro);
             contador1++;
         } else {
-            scanf(pt,"%s", cnpj->cnpjs[contador2].cnpj);
+            strcpy(cnpj->cnpjs[contador2].cnpj,tempregistro);
             contador2++;
         }
     }
