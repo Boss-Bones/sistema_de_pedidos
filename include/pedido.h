@@ -8,12 +8,12 @@ typedef struct ItemPedido
     as estruturas Pedido e Produto. */
 
     
-     //int pedidoId; // O id do pedido ao qual este item pertence.
-     /* duvida, ItemPedido faz parte de pedido, então porque repetir o id do pedido aqui? */
-
-     int produtoId; // O id do produto que está sendo comprado.
-     int quantidade; // A quantidade daquele produto específico neste pedido.
-     double subtotal; // O valor total para este item (quantidade multiplicada pelo preco do Produto).
+     
+     
+    int pedidoId; // mesmo id do pedido
+    int produtoId; // O id do produto que está sendo comprado.
+    int quantidade; // A quantidade daquele produto específico neste pedido.
+    double subtotal; // O valor total para este item (quantidade multiplicada pelo preco do Produto).
 
 } ItemPedido;
 
