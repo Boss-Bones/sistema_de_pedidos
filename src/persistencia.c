@@ -18,11 +18,6 @@ int salvarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     FILE *pt;
 
     pt = fopen("clientes.csv", "w");
-
-    // uma boa prática que eu vi no livro 
-    if(pt == NULL){
-        return -1; // se achar que deve ser outro valor pode mudar
-    }
     
     for(int i=0; i<clt->quant; i++){
         fprintf(pt, "%d;%s;%s;%s;%d", clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, clt->clientes[i].tipo);
@@ -160,10 +155,6 @@ int salvarProduto(ListaProduto *pdt){
 
     pt = fopen("produtos.csv", "w");
 
-    // uma boa prática que eu vi no livro 
-    if(pt == NULL){
-        return -1; // se achar que deve ser outro valor pode mudar
-    }
     /* essa função deve pegar o vetor de struct do tipo Produto que pertence a struct ListaProduto
     e usar a variável quant de ListaProduto pra saber quantos registros ela deve salvar no arquivo*/
     for(int i=0; i<pdt->quant; i++){
@@ -254,11 +245,6 @@ int salvarPedido(ListaPedido *pdd){
     FILE *pt;
 
     pt = fopen("pedidos.csv", "w");
-
-    // se o arquivo não existe
-    if(pt == NULL){
-        return -1;
-    }
 
     /* essa função deve pegar o vetor de struct do tipo Pedido que pertence a struct ListaPedido
     e usar a variável quant de ListaPedido pra saber quantos registros ela deve salvar no arquivo*/
