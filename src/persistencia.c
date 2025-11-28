@@ -127,7 +127,7 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
 
     /* a função vai verificar se o cliente é uma pessoa física ou uma pessoa jurídica para saber
     em qual vetor salvar o cpf ou cnpj*/
-        if(clt->cliente[i].tipo == 0){
+        if(clt->clientes[i].tipo == 0){
             scanf("%s", cpf->cpfs[contador1].cpf);
             contador1++;
         } else {
@@ -249,7 +249,7 @@ int carregarProduto(ListaProduto *pdt){
 --------------------------------------------------------------------------------------
 */
 
-int salvarPedido(ListaProduto *pdt){
+int salvarPedido(ListaPedido *pdt){
     //em andamento...
     
 }
