@@ -396,9 +396,9 @@ int carregarItemPedido(ListaPedido *pdd){
         pdd->pedidos[i].itens = (ItemPedido*)malloc(pdd->pedidos[i].max_itens * sizeof(ItemPedido));
     }
 
-    fseek(pt, 0, SEEK_SET);
-
     for(int i=0; i<pdd->quant; i++){
+
+        fseek(pt, 0, SEEK_SET);
 
         pdd->pedidos[i].quant_itens = 0;
 
