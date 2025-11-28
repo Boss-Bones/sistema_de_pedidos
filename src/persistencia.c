@@ -18,6 +18,10 @@ int salvarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     FILE *pt;
 
     pt = fopen("clientes.csv", "w");
+
+    if(pt == NULL){
+        return -1;
+    }
     
     for(int i=0; i<clt->quant; i++){
         fprintf(pt, "%d;%s;%s;%s;%d", clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, clt->clientes[i].tipo);
@@ -50,6 +54,13 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     int contador=0, contador1=0, contador2=0;
     char tempchar[400], tempregistro[19];
 
+    pt = fopen("clientes.csv", "r");
+
+    // se o arquivo não existe
+    if(pt == NULL){
+        return -1;
+    }
+
     // inicialização de segurança
     clt->quant=0;
     clt->max=0;
@@ -63,12 +74,6 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     cnpj->max = 0;
     cnpj->cnpjs = NULL;
 
-    pt = fopen("clientes.csv", "r");
-
-    // se o arquivo não existe
-    if(pt == NULL){
-        return -1;
-    }
 
     // se o arquivo existe
 
@@ -116,7 +121,7 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     inseridos no vetor */
 
     for(int i=0; i<(clt->quant); i++){
-        fscanf(pt, "%d;%99[^;];%199[^;];%19[^;];%d;%s\n", &clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, clt->clientes[i].tipo, tempregistro);
+        fscanf(pt, "%d;%99[^;];%199[^;];%19[^;];%d;%s\n", &clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, &clt->clientes[i].tipo, tempregistro);
         /* 99[^;] = leia tudo enquanto não for ponto e vírgula,
         fica no lugar de %s para ler a descrição toda enão parar de ler nos espaços */
 
@@ -155,6 +160,10 @@ int salvarProduto(ListaProduto *pdt){
 
     pt = fopen("produtos.csv", "w");
 
+    if(pt == NULL){
+        return -1;
+    }
+
     /* essa função deve pegar o vetor de struct do tipo Produto que pertence a struct ListaProduto
     e usar a variável quant de ListaProduto pra saber quantos registros ela deve salvar no arquivo*/
     for(int i=0; i<pdt->quant; i++){
@@ -176,19 +185,19 @@ int carregarProduto(ListaProduto *pdt){
     int contador=0;
     char tempchar[200];
 
-    // inicialização de segurança
-    pdt->quant=0;
-    pdt->max=0;
-    pdt->produtos = NULL;
-
-    pt = fopen("produtos.csv", "r");
-
     // se o arquivo não existe
     if(pt == NULL){
         return -1;
     }
 
     // se o arquivo existe
+
+    // inicialização de segurança
+    pdt->quant=0;
+    pdt->max=0;
+    pdt->produtos = NULL;
+
+    pt = fopen("produtos.csv", "r");
 
     /* tempchar é uma variável auxiliar que irá pegar cada linha do arquivo para contar quantos registros no total existem no arquivo, e cada linha escrita em tempchar incrementa a variável
     contador, que serve para armazenar o valor total de registros */
@@ -246,24 +255,6 @@ int salvarPedido(ListaPedido *pdd){
 
     pt = fopen("pedidos.csv", "w");
 
-    /* essa função deve pegar o vetor de struct do tipo Pedido que pertence a struct ListaPedido
-    e usar a variável quant de ListaPedido pra saber quantos registros ela deve salvar no arquivo*/
-    for(int i=0; i<pdd->quant; i++){
-        fprintf(pt, "%d;%d;%s;%lf\n", pdd->pedidos[i].id, pdd->pedidos[i].clienteId, pdd->pedidos[i].data, pdd->pedidos[i].total);
-
-        // obs csv usa ponto como separador decimal, Excel do Brasil usa vírgula, fica essa dúvida em aberto
-    }
-
-    fclose(pt);
-    
-}
-
-int salvarItemPedido(ListaPedido *pdd){
-    FILE *pt;
-
-    pt = fopen("itenspedidos.csv", "w");
-
-    // se o arquivo não existe
     if(pt == NULL){
         return -1;
     }
@@ -275,11 +266,194 @@ int salvarItemPedido(ListaPedido *pdd){
 
         // obs csv usa ponto como separador decimal, Excel do Brasil usa vírgula, fica essa dúvida em aberto
     }
+
+    fclose(pt);
+
+    return 0;
     
 }
 
-int carregarPedido(ListaProduto *pdt){
-    //em andamento...
+int salvarItemPedido(ListaPedido *pdd){
+    FILE *pt;
+
+    pt = fopen("itenspedidos.csv", "w");
+
+    if(pt == NULL){
+        return -1;
+    }
+
+    /* essa função deve pegar o vetor de struct do tipo Pedido que pertence a struct ListaPedido
+    e usar a variável quant de ListaPedido pra saber quantos registros ela deve salvar no arquivo*/
+
+    for(int i=0; i<pdd->pedidos[i].quant; i++){
+        for (int j = 0; j < pdd->pedidos[i].quant_itens; j++)
+        {
+            fprintf(pt,"%d;%d;%d;%lf", pdd->pedidos[i].itens[j].pedidoId, pdd->pedidos[i].itens[j].produtoId, pdd->pedidos[i].itens[j].quantidade, pdd->pedidos[i].itens[j].subtotal);
+        }
+    }
+
+    fclose(pt);
+
+    return 0;
     
 }
 
+int carregarPedido(ListaPedido *pdd){
+    FILE *pt;
+
+    int contador=0;
+    char tempchar[200];
+
+    pt = fopen("pedidos.csv", "r");
+
+    if(pt == NULL){
+        return -1;
+    }
+
+    pdd->quant=0;
+    pdd->max=0;
+    pdd->pedidos=NULL;
+
+    while((fgets(tempchar, sizeof(tempchar), pt)) != NULL){
+        contador++;
+    }
+
+    if(contador == 0){
+        pdd->pedidos = (pedido*)malloc(10 * sizeof(pedido));
+        pdd->max = 10;
+        fclose(pt);
+        return 0;
+    }
+
+    pdd->quant = contador;
+    pdd->max = contador*2;
+    pdd->pedidos = (pedido*)malloc( pdt->max * sizeof(pedido));
+
+    fseek(pt, 0, SEEK_SET);
+
+    for(int i=0; i<(pdd->quant); i++){
+        fscanf(pt, "%d;%d;%s;%lf\n", &pdd->pedidos[i].id, &pdd->pedidos[i].clienteId, pdd->pedidos[i].data, &pdd->pedidos[i].total);
+    }
+
+    fclose(pt);
+
+    return 0;
+    
+}
+
+int carregarItemPedido(ListaPedido *pdd){
+    
+    FILE *pt;
+
+    int contador=0, idpedidotemp, idprodutotemp, quantidadetemp;
+    double  subtotaltemp;
+    char tempchar[200];
+
+    pt = fopen("itenspedidos.csv", "r");
+
+    if(pt == NULL){
+        return -1;
+    }
+
+    // inicialização de segurança de quant, max e o ponteiros de itens de cada posição do vetor de pedidos
+    for (int i = 0; i < pdd->quant; i++)
+    {
+        pdd->pedidos[i].itens = NULL;
+        pdd->pedidos[i].quant_itens = 0;
+        pdd->pedidos[i].max_itens = 0; 
+    }
+
+    while((fgets(tempchar, sizeof(tempchar), pt)) != NULL){
+        contador++;
+    }
+
+    /* se tiver 0 linhas, cada vetor de pedido tem um vetor de itens pedidos,
+    este for aloca 10 espaços no vetor de itens pedidos que está contido em cada posição do
+    vetor de pedidos, e inicia o max_itens de cada posição com 10 */
+    if(contador == 0){
+        for (int i = 0; i < pdd->quant; i++)
+        {
+            pdd->pedidos[i].itens = (ItemPedido*)malloc(10*sizeof(ItemPedido));
+            pdd->pedidos[i].max_itens = 10;
+            fclose(pt);
+            return 0;
+        }
+    }
+
+    
+
+    /* se tiver mais que 0 linhas, cada vetor de pedido tem um vetor de itens pedidos,
+    este for atribui à max_itens o valor (quantidade de linhas * 2) e aloca essa quantidade de
+    espaços no vetor de itens pedidos que está contido em cada posição do vetor de pedidos,
+    e inicia o max_itens de cada posição com 10 */
+    for (int i = 0; i < pdd->quant; i++)
+    {
+        /* a lógica pra saber a quantidade de itens é muito difícil, pois cada pedido pode ter
+        uma quantidade variada e diferente de itens pedidos, por isso a quantidade de
+        itens pedidos é conhecida abaixo, mas aqui as quant_itens de cada posição
+        já estão iniciada com 0 na inicialização de segurança*/
+        pdd->pedidos[i].max_itens = contador * 2; 
+        pdd->pedidos[i].itens = (ItemPedido*)malloc(pdd->pedidos[i].max_itens * sizeof(ItemPedido));
+    }
+
+    fseek(pt, 0, SEEK_SET);
+
+    for(int i=0; i<pdd->quant; i++){
+
+        pdd->pedidos[i].quant_itens = 0;
+
+        while((fgets(tempchar, sizeof(tempchar), pt)) != NULL){
+            fscanf(pt, "%d;%d;%d;%lf", &idpedidotemp, &idprodutotemp, &quantidadetemp, &subtotaltemp);
+            if(pdd->pedidos[i].id == idpedidotemp){
+                pdd->pedidos[i].itens[pdd->pedidos[i].quant_itens].pedidoId = idpedidotemp;
+                pdd->pedidos[i].itens[pdd->pedidos[i].quant_itens].produtooId = idpedidotemp;
+                pdd->pedidos[i].itens[pdd->pedidos[i].quant_itens].quantidade = idpedidotemp;
+                pdd->pedidos[i].itens[pdd->pedidos[i].quant_itens].subtotal = idpedidotemp;
+
+                pdd->pedidos[i].quant_itens++;
+
+            } // fim if
+        } // fim while
+    } // fim for
+
+    fclose(pt);
+
+    return 0;
+
+    /* O for acima deve percorrer cada posição do vetor de pedidos;
+    Por exemplo, na posição o, pdd->pedidos[0], ele inicia a pdd->pedidos[0].quant_itens com 0,
+    então usa o while pra checar linha por linha. Cada laço do while ele guarda a linha atual em
+    4 variáveis temporarias,
+    (pois são 4 valores pra itens pedidos, "pedidoId, ProdutoId, quantidade, subtotal")
+    em seguida ele compara o id da posição atual do vetor de pedidos (nesse exemplo posição 0)
+    com o id que veio do arquivo, e ele só coloca os valores no subvetor de itens pedidos que está
+    na posição atual do vetor de pedidos se os ids forem iguais, e somente se isso acontecer
+    é que ele incrementa a variável quant_itens da atual posição do vetor de pedidos.
+    pdd->pedidos[0].quant_itens
+
+    É por isso que o próprio valor de pdd->pedidos[0].quant_itens é usado dentro do colchete, por exemplo:
+    pdd->pedidos[i].itens[   pdd->pedidos[i].quant_itens    ].pedidoId = idpedidotemp;
+    porque no começo ela é 0, o primeiro item pedido que entrar no subvetor irá na posição 0
+    pdd->pedidos[i].itens[   0    ].pedidoId = idpedidotemp;
+
+
+    então pdd->pedidos[i].quant_itens é incrementado e fica com o valor 1
+
+    Na próxima vez que o while guardar valores no subvetor, será na posição:
+    pdd->pedidos[i].itens[   1    ].pedidoId = idpedidotemp;
+    pois nesse momento,     pdd->pedidos[i].quant_itens = 1
+
+    Então nele continua o processo e percorre as linhas seguintes do arquivo,
+    e só coloca os valores no subvetor se os ids forem iguais.
+
+    Quando ele percorrer todas as linhas, apenas os itens pedidos com o mesmo id da posição atual
+    do vetor pedidos são colocados no subvetor, e também fica guardado a quantidade de itens em
+    pdd->pedidos[0].quant_itens, que só foi incrementada quando o while guardava valores no subvetor
+
+    Então o while chega no fim do arquivo e encerra. O for incrementa a int i e vai pra próxima
+    posição do vetor de pedidos. na posição pdd->pedidos[1] ele inicia a pdd->pedidos[1].quant_itens
+    com 0, recomeça o while e repete o mesmo processo, apenas incrementando pdd->pedidos[1].quant_itens se o id da posição
+    pdd->pedidos[1].id for igual ao id da linha atual do while
+    */
+    
+}
