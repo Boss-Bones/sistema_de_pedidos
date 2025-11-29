@@ -1,15 +1,13 @@
 #include "pedido.h"
-#include "cliente.h"
-#include "produto.h"
 #include <stdbool.h>
 #include <stdlib.h>
 
 
 // ==== Funções ====
 
+// nas funções de busca passar a lista como 'const' por motivos de sgurança, já que essas funções não podem mexer em nada dentro da lista
 
-
-int verificarPedido(int id, ListaPedido *lpedidos) {
+int verificarPedido(int id, const ListaPedido *lpedidos) {
     
     //Implementação do caso de uso "Analisar pedido"
 
@@ -27,7 +25,7 @@ int verificarPedido(int id, ListaPedido *lpedidos) {
 }
 
 
-bool analisarPedido(ListaPedido *pdd, int id)
+bool analisarPedido(const ListaPedido *pdd, int id)
 {
     int i;
     // verificar se o id do pedido já existe usando pdd->pedidos[i]
@@ -174,6 +172,65 @@ bool removerPedido(ListaPedido *pdd, int idRemove)
         pdd->pedidos[i] = pdd->pedidos[i+1];
     }
     pdd->quant--;
+
+    return true;
+
+}
+
+// função que permite consultar um pedido. Retorna um ponteiro para a strcut de um pedido específico
+
+pedido *consultarPedido (ListaPedido *pdd, int id)
+{
+    // buscar a posição do pedido requisitado no vetor de pedidos
+
+    int indice_pdd = verificarPedido(id, pdd);
+
+    // verificar se achou
+
+    if(indice_pdd != -1)
+    {
+        return &pdd->pedidos[indice_pdd];
+    }
+
+    return NULL; // se náo achar retorna o ponteiro nulo
+
+}
+
+// função para remover um item de pedido especifico de um pedido
+
+bool removerItemPedido(pedido *pdd, int id_produto)
+{
+    if (pdd == NULL) return false; // segurança
+
+    int i, indice_item = -1;
+    for(i = 0; i < pdd->quant_itens; i++)
+    {
+        if(id_produto == pdd->itens[i].produtoId)
+        {
+            indice_item = i; // achou o indice do item que quer remover
+            break;
+        }
+    }
+    
+    if(indice_item == -1) // segurança
+    {
+        return false;
+    }
+
+    // calcular o novo preço do pedido
+
+    pdd->total -= pdd->itens[indice_item].subtotal;
+
+    // remover o item e puxar os outros pra esquerda do vetor itens
+
+    for(i = indice_item; i < pdd->quant_itens - 1; i++)
+    {
+        pdd->itens[i] = pdd->itens[i + 1];
+    }
+
+    // diminuir a quantidade de itens de pedido
+
+    pdd->quant_itens--;
 
     return true;
 
