@@ -1,6 +1,7 @@
 #ifndef PRODUTO 
 #define PRODUTO
-
+#include <stdbool.h>
+#include "pedido.h"
 // ==== Estruturas ====
 
 typedef struct {
@@ -16,16 +17,14 @@ typedef struct {
     Produto* produtos; // Ponteiro para structs de produto
 } ListaProduto;
 
-void inserirProduto();
+bool inserirProduto(Produto prd, ListaProduto *pdt);
 
-void listarProduto();
+bool removerProduto(ListaProduto *pdt, ListaPedido *pdd, int idremove);
 
-void editarProduto();
+int verificarProduto(const ListaProduto *lprodutos, int id);
 
-void removerProduto();
+bool analisarProduto(const ListaProduto *pdt, int id);
 
-void salvarProdutoCSV();
-
-void carregarProdutoCSV();
+Produto *consultarProduto(ListaProduto *lprodutos, int id);
 
 #endif

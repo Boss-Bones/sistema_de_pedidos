@@ -27,7 +27,7 @@ Produto *consultarProduto(ListaProduto *lprodutos, int id)
     return NULL;
 }
 
-int verificarProduto(ListaProduto *lprodutos, int id)
+int verificarProduto(const ListaProduto *lprodutos, int id)
 {
     /*
     Implementação do caso de uso "Analisar produto"
@@ -55,7 +55,7 @@ int verificarProduto(ListaProduto *lprodutos, int id)
     return -1;
 }
 
-bool analisarProduto(ListaProduto *pdt, int id)
+bool analisarProduto(const ListaProduto *pdt, int id)
 {
     int i;
     // verificar se o id do produto já existe usando pdt->produtos[i]
@@ -82,7 +82,7 @@ bool inserirProduto(Produto prd, ListaProduto *pdt)
 
     if (pdt->quant == pdt->max) // verificar se tem espaço no vetor de produtos
     {
-        int nova_capacidade = (pdt->max = 0) ? 10 : pdt->max * 2;
+        int nova_capacidade = (pdt->max == 0) ? 10 : pdt->max * 2;
         int novo_tamanho_bytes = nova_capacidade * sizeof(Produto);
 
         // ponteiro temporário para não perder a lista em caso de erro
@@ -106,30 +106,44 @@ bool inserirProduto(Produto prd, ListaProduto *pdt)
     return true;
 }
 
-// Clebio, essa função pode ser reescrita em ncurses na interface.c, estarei pensando antes de remover
-
-// Clebio, no atual momento ainda não é possĩvel criar essa função
-bool removerProduto(ListaProduto *pdt, int idremove)
+bool removerProduto(ListaProduto *pdt, ListaPedido *pdd, int idremove)
 {
-    int indice, j = 0, existe = 0, existepedido = 0;
-
-    indice = verificarProduto(idremove);
-    if (indice == -1)
+    if(pdt == NULL)
+    {
+        return false;
+    }
+    // esses dois ifs são para segurança
+    if(pdd == NULL)
     {
         return false;
     }
 
-    // verificarPedido();
-    if (verificarPedido() != -1)
+    int indice = verificarProduto(pdt, idremove);
+    if(indice == -1)
     {
-        return false;
+        return false; // produto não encontrado
     }
 
-    for (int i = indice; i < (pdt->quant - 1); i++)
+    // ver se acha esse produto no vetor itens de cada pedido da lista de pedidos
+
+    int i, j;
+    for(i = 0; i<pdd->quant; i++)
     {
-        *((pdt->produtos) + i) = *((pdt->produtos) + i + 1);
+        for(j = 0; j<pdd->pedidos[i].quant_itens; j++)
+        {
+            if(idremove == pdd->pedidos[i].itens[j].produtoId)
+            {
+                return false; // achou um produto em um pedido
+            }
+        }
+    }
+
+    for(i = indice; i<pdt->quant-1; i++)
+    {
+        pdt->produtos[i] = pdt->produtos[i+1];
     }
     pdt->quant--;
 
     return true;
+
 }
