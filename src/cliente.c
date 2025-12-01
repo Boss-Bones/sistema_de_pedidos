@@ -39,13 +39,13 @@ int buscar_id_cliente(ListaCliente* clt, int id)
 }
 
 
-int buscar_cpf( int cpf, ListaCpf *lcpf)
+int buscar_cpf( int id_cliente, ListaCpf *lcpf)
 {
     // feita usando e adaptando a lógica de buscar_id_cliente
     int i;
     for(i = 0; i < lcpf->quant; i++)
     {
-        if(cpf == lcpf->cpfs[i].id)
+        if(id_cliente == lcpf->cpfs[i].id)
         {
             return i; // Retorna a posição do cpf do cliente
         }
@@ -54,13 +54,13 @@ int buscar_cpf( int cpf, ListaCpf *lcpf)
     return -1; // Cliente não existe
 }
 
-int buscar_cnpj( int cnpj, ListaCnpj *lcnpj)
+int buscar_cnpj( int id_cliente, ListaCnpj *lcnpj)
 {
     // feita usando e adaptando a lógica de buscar_id_cliente
     int i;
     for(i = 0; i < lcnpj->quant; i++)
     {
-        if(cnpj == lcnpj->cnpjs[i].id)
+        if(id_cliente == lcnpj->cnpjs[i].id)
         {
             return i; // Retorna a posição do cpf do cliente
         }
@@ -253,10 +253,6 @@ bool InserirCnpj(ListaCnpj *clt, PessoaJuridica cnpj)
     return true;
 
 }
-
-void listarCliente(){}
-
-void editarCliente(){}
 
 bool removerCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj, int idremove){
     

@@ -84,9 +84,9 @@ bool verificar_id_cliente(ListaCliente *clt, int id);
 
 int buscar_id_cliente(ListaCliente* clt, int id);
 
-int buscar_cpf( int cpf, ListaCpf *lcpf);
+int buscar_cpf( int id_cliente, ListaCpf *lcpf);
 
-int buscar_cnpj( int cnpj, ListaCnpj *lcnpj);
+int buscar_cnpj( int id_cliente, ListaCnpj *lcnpj);
 
 bool verificar_cpf(ListaCpf *clt, char *cpf_digitado);
 
@@ -97,10 +97,6 @@ cliente* consultarCliente(ListaCliente *lclientes, int id);
 bool InserirCpf(ListaCpf *clt, PessoaFisica cpf);
 
 bool InserirCnpj(ListaCnpj *clt, PessoaJuridica cnpj);
-
-void listarCliente();
-
-void editarCliente();
 
 bool removerCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj, int idremove);
 
