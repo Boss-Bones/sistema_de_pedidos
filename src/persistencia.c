@@ -24,14 +24,16 @@ int salvarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     }
     
     for(int i=0; i<clt->quant; i++){
-        fprintf(pt, "%d;%s;%s;%s;%d", clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, clt->clientes[i].tipo);
+        fprintf(pt, "%d;%s;%s;%s;%d;", clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, clt->clientes[i].tipo);
 
-        if(clt->clientes[i].tipo == 0)
+        /* Fiz uns testes locais em outro programa, e funcionou eu colocando
+        o nome da constante na comparaçao, e não o numero inteiro dela*/
+        if(clt->clientes[i].tipo == TIPO_PESSOA_FISICA)
         {
             // fazwr funçoes buscar_cpf() e buscar_cnpj()
-            fprintf(pt,";%s\n", cpf->cpfs[buscar_cpf(clt->clientes[i].id, cpf)].cpf);
+            fprintf(pt,"%s\n", cpf->cpfs[buscar_cpf(clt->clientes[i].id, cpf)].cpf);
         } else {
-            fprintf(pt,";%s\n", cnpj->cnpjs[buscar_cnpj(clt->clientes[i].id, cnpj)].cnpj);
+            fprintf(pt,"%s\n", cnpj->cnpjs[buscar_cnpj(clt->clientes[i].id, cnpj)].cnpj);
         }
 
         /* cada colchete acima chama as funções de buscar cpf e cnpj, que recebem como argumentos
@@ -51,7 +53,7 @@ int salvarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
 int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     FILE *pt;
 
-    int contador=0, contador1=0, contador2=0;
+    int contador=0, temptipo;
     char tempchar[400], tempregistro[19];
 
     pt = fopen("clientes.csv", "r");
@@ -74,11 +76,22 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     cnpj->max = 0;
     cnpj->cnpjs = NULL;
 
+    /*se ainda assim não funcionar, tentar colocar mais parametros e alterar desse modo:
+    cl = NULL;
+    clt->clientes = cl;
+    cp = NULL;
+    clp->cpfs = cp;
+    cnp = NULL;
+    cnpj->cnpjs = cl;
+
+    aqui cl, cp, e cnp, seriam ponteiros dos vetores de cliente, cpf e cnpj, respectivamente. Atenção, eles não seriam ponteiros pras variaveis tipo
+    ponteiro que estão nas LISTAS, mas sim ponteiros dos vetores
+    */
+
 
     // se o arquivo existe
 
-    /* tempchar é uma variável auxiliar que irá pegar cada linha do arquivo para contar quantos registros no total existem no arquivo, e cada linha escrita em tempchar incrementa a variável
-    contador, que serve para armazenar o valor total de registros */
+    /* tempchar é uma variável auxiliar que irá pegar cada linha do arquivo para contar quantos registros no total existem no arquivo, e cada linha escrita em tempchar incrementa a variável contador, que serve para armazenar o valor total de registros. Talvez eu podia usar clt->quant direto nesse while, mas deixa. */
     while((fgets(tempchar, sizeof(tempchar), pt)) != NULL){
         contador++;
     }
@@ -96,20 +109,22 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     }
 
     /* Uma vez que contador tem o valor total de registros e é maior que 0,
-    ela serve pra auxiliar a alocação de memória para os vetores de clientes, cpf e cnpj e
-    guardar a quantidade atual na variáveis de quantidade quant */
+    ela serve pra auxiliar a alocação de memória para os vetores de clientes, cpf e cnpj e guardar a quantidade atual na variável de quantidade clt->quant */
 
     clt->quant = contador;
     clt->max = contador*2;
     clt->clientes = (cliente*)malloc(clt->max * sizeof(cliente));
 
-    cpf->quant = contador;
+    //cpf->quant = contador;
     cpf->max = contador*2;
     cpf->cpfs = (PessoaFisica*)malloc(cpf->max * sizeof(PessoaFisica));
 
-    cnpj->quant = contador;
+    //cnpj->quant = contador;
     cnpj->max = contador*2;
     cnpj->cnpjs = (PessoaJuridica*)malloc(cpf->max * sizeof(PessoaJuridica));
+
+    /*Obs. cpf e cnpj quant não devem receber o mesmo valor de contador, pois por exmeplo, se houver 10 clientes, 7 fisica, 3 juridica, não dá pra dizer que há
+    10 cpfs e 10 cnpjs. Deixei como comentário acima esse erro*/
 
 
     fseek(pt, 0, SEEK_SET);
@@ -117,25 +132,34 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     quantidde de registros, o ponteiro de leitura estará posicionado no final do arquivo */
 
     
-    /* Por fim o for usa a variável contador como base para saber quantos registros serão
-    inseridos no vetor */
+    /* Por fim o for usa a variável clt->quant que recebeu contador como base
+    para saber quantos registros serão inseridos no vetor. Como não é possível,
+    por exemplo, haver mais cpfs do que clientes, as variaveis
+    cpf->quant e cnpj->quant continuam como 0 e só são incrementadas quando
+    houver um cliente do seu tipo*/
 
-    for(int i=0; i<(clt->quant); i++){
-        fscanf(pt, "%d;%99[^;];%199[^;];%19[^;];%d;%s\n", &clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, &clt->clientes[i].tipo, tempregistro);
+    for(int i=0; i < clt->quant; i++){
+        fscanf(pt, "%d;%99[^;];%199[^;];%19[^;];%d;", &clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, temptipo);
         /* 99[^;] = leia tudo enquanto não for ponto e vírgula,
         fica no lugar de %s para ler a descrição toda enão parar de ler nos espaços */
 
+        /* Aqui ele pega o valor inteiro que vem do arquivo e converte para
+        o tipo da Enum, isso serve apra evitar comportamento indefinido*/
+        clt->clientes[i].tipo = (TipoCliente)temptipo;
+        
 
-    /* a função vai verificar se o cliente é uma pessoa física ou uma pessoa jurídica para saber
-    em qual vetor salvar o cpf ou cnpj*/
-        if(clt->clientes[i].tipo == 0){
-            strcpy(cpf->cpfs[contador1].cpf, tempregistro);
-            contador1++;
+
+    /* a função vai verificar se o cliente é uma pessoa física ou uma pessoa jurídica para saber em qual vetor salvar o cpf ou cnpj. Aqui no final
+    a condição é enquanto não for barra n "\n" pois como é o último dado da linha
+    não haverá mais ";" nessa linha */
+        if(clt->clientes[i].tipo == TIPO_PESSOA_FISICA){
+            fscanf(pt, "%14[^\n]\n", cpf->cpfs[cpf->quant].cpf);
+            cpf->quant++;
         } else {
-            strcpy(cnpj->cnpjs[contador2].cnpj,tempregistro);
-            contador2++;
+            fscanf(pt, "%18[^\n]\n", cnpj->cnpjs[cnpj->quant].cnpj);
+            cnpj->quant++;
         }
-    }
+    } // fim do for
 
     fclose(pt);
 
