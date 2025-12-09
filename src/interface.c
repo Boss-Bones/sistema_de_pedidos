@@ -6,7 +6,6 @@
 #include <ncurses.h>
 #include <locale.h>
 #include <stdbool.h>
-#include <unistd.h> // Ainda vou usar
 #include <string.h>
 #include <limits.h>
 #include <float.h>
