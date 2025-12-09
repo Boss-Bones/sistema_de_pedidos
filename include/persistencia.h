@@ -1,6 +1,10 @@
 #ifndef PERSISTENCIA 
 #define PERSISTENCIA
 
+#include "cliente.h"
+#include "produto.h"
+#include "pedido.h"
+
 // Coloque a prototipação da função aqui
 int salvarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj);
 int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj);

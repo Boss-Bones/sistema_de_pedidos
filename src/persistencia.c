@@ -4,6 +4,7 @@
 #include "produto.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 /*
 --------------------------------------------------------------------------------------
@@ -54,7 +55,7 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     FILE *pt;
 
     int contador=0, temptipo;
-    char tempchar[400], tempregistro[19];
+    char tempchar[400];
 
     pt = fopen("clientes.csv", "r");
 
@@ -139,7 +140,7 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     houver um cliente do seu tipo*/
 
     for(int i=0; i < clt->quant; i++){
-        fscanf(pt, "%d;%99[^;];%199[^;];%19[^;];%d;", &clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, temptipo);
+        fscanf(pt, "%d;%99[^;];%199[^;];%19[^;];%d;", &clt->clientes[i].id, clt->clientes[i].nome, clt->clientes[i].endereco, clt->clientes[i].telefone, &temptipo);
         /* 99[^;] = leia tudo enquanto não for ponto e vírgula,
         fica no lugar de %s para ler a descrição toda enão parar de ler nos espaços */
 
@@ -154,9 +155,11 @@ int carregarCliente(ListaCliente *clt, ListaCpf *cpf, ListaCnpj *cnpj){
     não haverá mais ";" nessa linha */
         if(clt->clientes[i].tipo == TIPO_PESSOA_FISICA){
             fscanf(pt, "%14[^\n]\n", cpf->cpfs[cpf->quant].cpf);
+            cpf->cpfs[cpf->quant].id = clt->clientes[i].id;
             cpf->quant++;
         } else {
             fscanf(pt, "%18[^\n]\n", cnpj->cnpjs[cnpj->quant].cnpj);
+            cnpj->cnpjs[cnpj->quant].id = clt->clientes[i].id;
             cnpj->quant++;
         }
     } // fim do for
@@ -209,6 +212,7 @@ int carregarProduto(ListaProduto *pdt){
     int contador=0;
     char tempchar[200];
 
+    pt = fopen("produtos.csv", "r");
     // se o arquivo não existe
     if(pt == NULL){
         return -1;
@@ -221,7 +225,7 @@ int carregarProduto(ListaProduto *pdt){
     pdt->max=0;
     pdt->produtos = NULL;
 
-    pt = fopen("produtos.csv", "r");
+
 
     /* tempchar é uma variável auxiliar que irá pegar cada linha do arquivo para contar quantos registros no total existem no arquivo, e cada linha escrita em tempchar incrementa a variável
     contador, que serve para armazenar o valor total de registros */
@@ -309,10 +313,10 @@ int salvarItemPedido(ListaPedido *pdd){
     /* essa função deve pegar o vetor de struct do tipo Pedido que pertence a struct ListaPedido
     e usar a variável quant de ListaPedido pra saber quantos registros ela deve salvar no arquivo*/
 
-    for(int i=0; i<pdd->pedidos[i].quant; i++){
+    for(int i=0; i<pdd->quant; i++){
         for (int j = 0; j < pdd->pedidos[i].quant_itens; j++)
         {
-            fprintf(pt,"%d;%d;%d;%lf", pdd->pedidos[i].itens[j].pedidoId, pdd->pedidos[i].itens[j].produtoId, pdd->pedidos[i].itens[j].quantidade, pdd->pedidos[i].itens[j].subtotal);
+            fprintf(pt,"%d;%d;%d;%lf\n", pdd->pedidos[i].itens[j].pedidoId, pdd->pedidos[i].itens[j].produtoId, pdd->pedidos[i].itens[j].quantidade, pdd->pedidos[i].itens[j].subtotal);
         }
     }
 
@@ -351,12 +355,12 @@ int carregarPedido(ListaPedido *pdd){
 
     pdd->quant = contador;
     pdd->max = contador*2;
-    pdd->pedidos = (pedido*)malloc( pdt->max * sizeof(pedido));
+    pdd->pedidos = (pedido*)malloc( pdd->max * sizeof(pedido));
 
     fseek(pt, 0, SEEK_SET);
 
     for(int i=0; i<(pdd->quant); i++){
-        fscanf(pt, "%d;%d;%s;%lf\n", &pdd->pedidos[i].id, &pdd->pedidos[i].clienteId, pdd->pedidos[i].data, &pdd->pedidos[i].total);
+        fscanf(pt, "%d;%d;%10[^;];%lf\n", &pdd->pedidos[i].id, &pdd->pedidos[i].clienteId, pdd->pedidos[i].data, &pdd->pedidos[i].total);
     }
 
     fclose(pt);
@@ -426,13 +430,13 @@ int carregarItemPedido(ListaPedido *pdd){
 
         pdd->pedidos[i].quant_itens = 0;
 
-        while((fgets(tempchar, sizeof(tempchar), pt)) != NULL){
-            fscanf(pt, "%d;%d;%d;%lf", &idpedidotemp, &idprodutotemp, &quantidadetemp, &subtotaltemp);
+        while(fscanf(pt, "%d;%d;%d;%lf\n", &idpedidotemp, &idprodutotemp, &quantidadetemp, &subtotaltemp) == 4){
+            //
             if(pdd->pedidos[i].id == idpedidotemp){
                 pdd->pedidos[i].itens[pdd->pedidos[i].quant_itens].pedidoId = idpedidotemp;
-                pdd->pedidos[i].itens[pdd->pedidos[i].quant_itens].produtooId = idpedidotemp;
-                pdd->pedidos[i].itens[pdd->pedidos[i].quant_itens].quantidade = idpedidotemp;
-                pdd->pedidos[i].itens[pdd->pedidos[i].quant_itens].subtotal = idpedidotemp;
+                pdd->pedidos[i].itens[pdd->pedidos[i].quant_itens].produtoId = idprodutotemp;
+                pdd->pedidos[i].itens[pdd->pedidos[i].quant_itens].quantidade = quantidadetemp;
+                pdd->pedidos[i].itens[pdd->pedidos[i].quant_itens].subtotal = subtotaltemp;
 
                 pdd->pedidos[i].quant_itens++;
 
