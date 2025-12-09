@@ -61,7 +61,7 @@ A persistência dos dados é realizada em arquivos de texto no formato CSV (`Cli
 
 ## Como Compilar e Executar
 
-Rode os seguintes comandos em um ambiente GNU/Linux:
+Clone o repositório e rode os seguintes comandos em um terminal de um ambiente GNU/Linux:
 ```sh
 make
 cd build
