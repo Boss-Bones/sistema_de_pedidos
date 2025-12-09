@@ -4,4 +4,4 @@ build/
 *.so
 *.dll
 *.csv
-.vscode
+.vscode/
