@@ -61,7 +61,13 @@ A persistência dos dados é realizada em arquivos de texto no formato CSV (`Cli
 
 ## Como Compilar e Executar
 
-*Isso será esclarecido após iniciar o projeto...*
+Rode os seguintes comandos em um ambiente GNU/Linux:
+```sh
+make
+cd build
+./scp
+```
+O programa não foi projetado para outros OS, como o Windows e outros, é recomendado a utilização de um sistema GNU/Linux.
 
 ## Padrões internos dentro do código
 
@@ -80,6 +86,6 @@ Em situações que for necessário imprimir algo para o usuário, ou qualquer te
 
 - [João Fernando Costa Umbelino](https://github.com/Boss-Bones)
     
-- [Lucas Costa Vieira de Lima](https://github.com/shoriuguen)
+- [Lucas Costa Vieira de Lima](https://github.com/Lucas-Costa-Vieira-de-Lima)
     
 - [Clebio Ribeiro Lopes](https://github.com/ClebioRibeiro)
