@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdlib.h>
 
 
 // Função para verificar se o id que o cliente digitou pode ser usado
